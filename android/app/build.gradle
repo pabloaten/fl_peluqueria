@@ -26,6 +26,7 @@ android {
     namespace "com.example.fl_peluqueria"
     compileSdkVersion flutter.compileSdkVersion
     ndkVersion flutter.ndkVersion
+      
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8

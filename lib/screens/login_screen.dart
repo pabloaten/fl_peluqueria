@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fl_peluqueria/screens/home_screen.dart';
+import 'package:local_auth/local_auth.dart';
 
 class InicioSesionScreen extends StatelessWidget {
   const InicioSesionScreen({Key? key}) : super(key: key);
@@ -8,6 +9,7 @@ class InicioSesionScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final FirebaseAuth _auth = FirebaseAuth.instance;
+    final LocalAuthentication _localAuth = LocalAuthentication();
 
     String email = '';
     String password = '';
@@ -26,6 +28,28 @@ class InicioSesionScreen extends StatelessWidget {
       } catch (e) {
         print('Error al iniciar sesión: $e');
         // Manejar el error apropiadamente
+      }
+    }
+
+    Future<void> authenticateWithBiometrics() async {
+      try {
+        bool authenticated = await _localAuth.authenticate(
+          localizedReason: 'Por favor, autentica para iniciar sesión',
+        );
+        if (authenticated) {
+          // Autenticación biométrica exitosa
+          print('Autenticación biométrica exitosa');
+          // Lógica para iniciar sesión
+          signIn();
+        } else {
+          // Autenticación biométrica fallida
+          print('Autenticación biométrica fallida');
+          // Puedes manejar este caso según tu lógica de la aplicación
+        }
+      } catch (e) {
+        // Error al autenticar
+        print('Error al autenticar: $e');
+        // Puedes manejar el error apropiadamente
       }
     }
 
@@ -57,6 +81,11 @@ class InicioSesionScreen extends StatelessWidget {
             ElevatedButton(
               onPressed: signIn,
               child: const Text('Iniciar Sesión'),
+            ),
+            const SizedBox(height: 10),
+            ElevatedButton(
+              onPressed: authenticateWithBiometrics,
+              child: const Text('Iniciar Sesión con Huella Digital'),
             ),
           ],
         ),

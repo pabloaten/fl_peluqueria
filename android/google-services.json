@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "76139869605",
+    "firebase_url": "https://fl-productos2023-2024-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "fl-productos2023-2024",
+    "storage_bucket": "fl-productos2023-2024.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:76139869605:android:790be5c90f68a57ac1a44c",
+        "android_client_info": {
+          "package_name": "com.peluqueriapelopo"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDL25Xbsh-64LpfgNW8kk622PeSoEdk-8w"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

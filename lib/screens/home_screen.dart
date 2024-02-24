@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'reservas_screen.dart'; // Importa la pantalla de reservas
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -46,7 +47,10 @@ class HomeScreen extends StatelessWidget {
             // Implementa la lógica para la gestión de peluqueros
           }),
           _buildMenuItem(context, 'Reservas', () {
-            // Implementa la lógica para ver las reservas
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => ReservasScreen()), // Navega a la pantalla de reservas
+            );
           }),
           _buildMenuItem(context, 'Comprobación de horarios', () {
             // Implementa la lógica para comprobar los horarios

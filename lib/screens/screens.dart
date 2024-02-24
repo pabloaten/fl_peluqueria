@@ -1,0 +1,1 @@
+export 'package:fl_peluqueria/screens/peluqueros_screen.dart';

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'dart:io';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -37,20 +39,9 @@ class HomeScreen extends StatelessWidget {
             // Implementa la lógica para cerrar la sesión
           }),
           _buildMenuItem(context, 'Contactar por WhatsApp', () {
-            // Implementa la lógica para contactar por WhatsApp
+            whatsapp();
           }),
-          _buildMenuItem(context, 'Calendario y horario de apertura', () {
-            // Implementa la lógica para ver el calendario y horario de apertura
-          }),
-          _buildMenuItem(context, 'Gestión de peluqueros', () {
-            // Implementa la lógica para la gestión de peluqueros
-          }),
-          _buildMenuItem(context, 'Reservas', () {
-            // Implementa la lógica para ver las reservas
-          }),
-          _buildMenuItem(context, 'Comprobación de horarios', () {
-            // Implementa la lógica para comprobar los horarios
-          }),
+          // Otros elementos del menú...
         ],
       ),
     );
@@ -61,5 +52,22 @@ class HomeScreen extends StatelessWidget {
       title: Text(title),
       onTap: onTap,
     );
+  }
+
+  // Función para abrir WhatsApp
+  void whatsapp() async {
+    var contact = "+880123232333";
+    var androidUrl = "whatsapp://send?phone=$contact&text=Hi, I need some help";
+    var iosUrl = "https://wa.me/$contact?text=${Uri.parse('Hi, I need some help')}";
+
+    try {
+      if (Platform.isIOS) {
+        await launchUrl(Uri.parse(iosUrl));
+      } else {
+        await launchUrl(Uri.parse(androidUrl));
+      }
+    } on Exception {
+     
+    }
   }
 }

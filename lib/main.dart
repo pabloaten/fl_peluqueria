@@ -1,4 +1,5 @@
 import 'package:fl_peluqueria/screens/login_screen.dart';
+import 'package:fl_peluqueria/screens/peluqueros_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:fl_peluqueria/screens/register_screen.dart';
@@ -27,7 +28,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: const RegistrarScreen(),
+      home: const PeluquerosScreen(),
     );
   }
 }

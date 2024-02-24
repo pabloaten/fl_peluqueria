@@ -63,18 +63,22 @@ class InicioSesionScreen extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
+            Image.asset('assets/logo.png'), // Agrega la imagen encima de los campos
+            const SizedBox(height: 20),
             TextField(
               onChanged: (value) => email = value,
-              decoration: const InputDecoration(
+              decoration: InputDecoration(
                 labelText: 'Correo Electrónico',
+                prefixIcon: Icon(Icons.email), // Icono a la izquierda del campo
               ),
             ),
             const SizedBox(height: 20),
             TextField(
               onChanged: (value) => password = value,
               obscureText: true,
-              decoration: const InputDecoration(
+              decoration: InputDecoration(
                 labelText: 'Contraseña',
+                prefixIcon: Icon(Icons.lock), // Icono a la izquierda del campo
               ),
             ),
             const SizedBox(height: 20),

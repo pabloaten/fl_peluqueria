@@ -1,4 +1,6 @@
+import 'package:fl_peluqueria/screens/login_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'dart:io';
 
@@ -36,7 +38,7 @@ class HomeScreen extends StatelessWidget {
             ),
           ),
           _buildMenuItem(context, 'Cerrar sesión', () {
-            // Implementa la lógica para cerrar la sesión
+            _signOut(context);
           }),
           _buildMenuItem(context, 'Contactar por WhatsApp', () {
             whatsapp();
@@ -67,7 +69,28 @@ class HomeScreen extends StatelessWidget {
         await launchUrl(Uri.parse(androidUrl));
       }
     } on Exception {
-     
+      
     }
   }
+
+  // Función para cerrar sesión
+
+  // Dentro de la función _signOut en HomeScreen
+void _signOut(BuildContext context) async {
+  try {
+    await FirebaseAuth.instance.signOut();
+         Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const InicioSesionScreen()),
+                        );
+  } catch (e) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Error al cerrar sesión: $e'),
+      ),
+    );
+  }
+}
+
 }

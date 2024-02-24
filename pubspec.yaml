@@ -37,7 +37,7 @@ dependencies:
   url_launcher: ^6.0.3
   provider: ^6.0.5
   flutter_share: ^2.0.0
-  easy_search_bar_: ^2.5.0
+  easy_search_bar: ^2.5.0
   
   
   

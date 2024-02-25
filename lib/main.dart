@@ -4,6 +4,7 @@ import 'package:fl_peluqueria/screens/peluqueros_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:fl_peluqueria/screens/register_screen.dart';
+import 'package:fl_peluqueria/app_theme/app_theme.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -29,7 +30,8 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: const HomeScreen(),
+      home: const InicioSesionScreen(),
+       theme: AppTheme.lightTheme,
     );
   }
 }

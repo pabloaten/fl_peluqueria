@@ -1,21 +1,32 @@
-import 'package:fl_peluqueria/screens/login_screen.dart';
+import 'package:fl_peluqueria/app_theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'dart:io';
+import 'login_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Inicio'),
-      ),
-      drawer: _buildDrawer(context),
-      body: Center(
-        child: const Text('Contenido de la página de inicio'),
+    User? user = FirebaseAuth.instance.currentUser;
+
+    return WillPopScope(
+      onWillPop: () async {
+        // Impedir que la pantalla se pueda retroceder
+        return false;
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('Inicio'),
+          backgroundColor: AppTheme.primary, 
+           automaticallyImplyLeading: false,// Coloca tu color primario aquí
+        ),
+        endDrawer: _buildDrawer(context), // Cambio de drawer a endDrawer
+        body: Center(
+          child: Text(user?.email ?? 'Usuario desconocido'),
+        ),
       ),
     );
   }
@@ -27,7 +38,7 @@ class HomeScreen extends StatelessWidget {
         children: [
           DrawerHeader(
             decoration: BoxDecoration(
-              color: Colors.blue,
+              color: AppTheme.primary, // Coloca tu color primario aquí
             ),
             child: Text(
               'Menú',
@@ -60,7 +71,8 @@ class HomeScreen extends StatelessWidget {
   void whatsapp() async {
     var contact = "+880123232333";
     var androidUrl = "whatsapp://send?phone=$contact&text=Hi, I need some help";
-    var iosUrl = "https://wa.me/$contact?text=${Uri.parse('Hi, I need some help')}";
+    var iosUrl =
+        "https://wa.me/$contact?text=${Uri.parse('Hi, I need some help')}";
 
     try {
       if (Platform.isIOS) {
@@ -68,29 +80,25 @@ class HomeScreen extends StatelessWidget {
       } else {
         await launchUrl(Uri.parse(androidUrl));
       }
-    } on Exception {
-      
-    }
+    } on Exception {}
   }
 
   // Función para cerrar sesión
-
-  // Dentro de la función _signOut en HomeScreen
-void _signOut(BuildContext context) async {
-  try {
-    await FirebaseAuth.instance.signOut();
-         Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const InicioSesionScreen()),
-                        );
-  } catch (e) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('Error al cerrar sesión: $e'),
-      ),
-    );
+  void _signOut(BuildContext context) async {
+    try {
+      await FirebaseAuth.instance.signOut();
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const InicioSesionScreen(),
+        ),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Error al cerrar sesión: $e'),
+        ),
+      );
+    }
   }
-}
-
 }

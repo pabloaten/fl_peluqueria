@@ -1,3 +1,5 @@
+import 'package:fl_peluqueria/app_theme/app_theme.dart';
+import 'package:fl_peluqueria/screens/register_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fl_peluqueria/screens/home_screen.dart';
@@ -56,6 +58,7 @@ class InicioSesionScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Inicio de Sesión'),
+        backgroundColor: AppTheme.primary,
       ),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
@@ -63,15 +66,29 @@ class InicioSesionScreen extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Image.asset('assets/logo.png'), // Agrega la imagen encima de los campos
+            Container(
+              height: 300, // ajusta el alto según sea necesario
+              width: 300, // ajusta el ancho según sea necesario
+              child: Image.asset(
+                'assets/logo.png',
+                fit: BoxFit
+                    .contain, // para ajustar la imagen dentro del contenedor
+              ),
+            ), // Agrega la imagen encima de los campos
             const SizedBox(height: 20),
             TextField(
               onChanged: (value) => email = value,
               decoration: InputDecoration(
                 labelText: 'Correo Electrónico',
-                prefixIcon: Icon(Icons.email), // Icono a la izquierda del campo
+                prefixIcon: Icon(Icons.email),
+                fillColor: AppTheme.primary,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.all(
+                      Radius.circular(0)), // Bordes completamente cuadrados
+                ),
               ),
             ),
+
             const SizedBox(height: 20),
             TextField(
               onChanged: (value) => password = value,
@@ -83,13 +100,30 @@ class InicioSesionScreen extends StatelessWidget {
             ),
             const SizedBox(height: 20),
             ElevatedButton(
-              onPressed: signIn,
-              child: const Text('Iniciar Sesión'),
-            ),
+                onPressed: signIn,
+                child: const Text('Iniciar Sesión'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppTheme.primary,
+                )),
             const SizedBox(height: 10),
             ElevatedButton(
               onPressed: authenticateWithBiometrics,
               child: const Text('Iniciar Sesión con Huella Digital'),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppTheme.primary,
+              ),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => RegistrarScreen()),
+                );
+              },
+              child: const Text('Registrarse'),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppTheme.primary,
+              ),
             ),
           ],
         ),

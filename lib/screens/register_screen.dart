@@ -1,8 +1,10 @@
+import 'dart:convert';
+import 'package:fl_peluqueria/app_theme/app_theme.dart';
+import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fl_peluqueria/screens/home_screen.dart';
 import 'package:fl_peluqueria/screens/login_screen.dart';
-import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 
 class RegistrarScreen extends StatefulWidget {
   const RegistrarScreen({Key? key}) : super(key: key);
@@ -19,24 +21,48 @@ class _RegistrarScreenState extends State<RegistrarScreen> {
   bool _obscureTextContrasena = true;
   bool _obscureTextConfirmar = true;
   final myFormKey = GlobalKey<FormState>();
+  final String databaseURL =
+      'https://fl-productos2023-2024-default-rtdb.europe-west1.firebasedatabase.app/';
+
+  // Método para insertar datos en la base de datos
+  Future<void> insertData(Map<String, dynamic> data) async {
+    final Uri url = Uri.parse('$databaseURL/usuarios.json');
+
+    try {
+      final response = await http.post(
+        url,
+        body: json.encode(data),
+      );
+
+      if (response.statusCode == 200) {
+        print('Datos insertados correctamente');
+      } else {
+        print('Error al insertar datos: ${response.statusCode}');
+      }
+    } catch (error) {
+      print('Error al insertar datos: $error');
+    }
+  }
 
   final Map<String, String> formValues = {
-    'nombreApellidos': 'Raul Barea Rodriguez',
-    'sexo': 'Hombre',
-    'email': 'rbareajunior@gmail.com',
-    'telefono': '6464202144',
-    'contraseña': '123456',
-    'confirmar': '123456',
+    'nombreApellidos': '',
+    'sexo': '',
+    'email': '',
+    'telefono': '',
+    'contraseña': '',
+    'confirmar': '',
+    'rol': 'peluquero'
   };
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        title: const Text("REGISTRARSE"),
         elevation: 0,
-        backgroundColor: Colors.white,
+        backgroundColor: AppTheme.primary,
         leading: IconButton(
-          color: Colors.black,
+          color: Colors.white,
           icon: const Icon(Icons.arrow_back),
           onPressed: () => Navigator.push(
             context,
@@ -53,13 +79,7 @@ class _RegistrarScreenState extends State<RegistrarScreen> {
               const SizedBox(
                 height: 15,
               ),
-              const Padding(
-                padding: EdgeInsets.only(right: 210, top: 7),
-                child: Text(
-                  'Regístrate',
-                  style: TextStyle(fontSize: 21, fontWeight: FontWeight.w500),
-                ),
-              ),
+             
               const SizedBox(
                 height: 20,
               ),
@@ -105,6 +125,24 @@ class _RegistrarScreenState extends State<RegistrarScreen> {
                     ),
                   ],
                 ),
+              ),
+               const SizedBox(
+                height: 17,
+              ),
+              TextFormField(
+                autocorrect: false,
+                keyboardType: TextInputType.text,
+                decoration: InputDecoration(
+                  labelText: 'Nombre y Apellidos',
+                  prefixIcon: Icon(Icons.person),
+                ),
+                onChanged: (value) => formValues['nombreApellidos'] = value,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Por favor, ingresa tu nombre y apellidos';
+                  }
+                  return null;
+                },
               ),
               const SizedBox(
                 height: 17,
@@ -193,7 +231,7 @@ class _RegistrarScreenState extends State<RegistrarScreen> {
               const SizedBox(
                 height: 30,
               ),
-              SwitchListTile.adaptive(
+             /*  SwitchListTile.adaptive(
                 activeColor: const Color.fromARGB(255, 20, 40, 56),
                 value: _sliderEnabledPromociones,
                 title: const Text(
@@ -208,7 +246,7 @@ class _RegistrarScreenState extends State<RegistrarScreen> {
               ),
               const SizedBox(
                 height: 10,
-              ),
+              ), */
               SwitchListTile.adaptive(
                 activeColor: const Color.fromARGB(255, 20, 40, 56),
                 value: _sliderEnabledPrivacidad,
@@ -221,12 +259,14 @@ class _RegistrarScreenState extends State<RegistrarScreen> {
                   _sliderEnabledPrivacidad = value;
                   setState(() {});
                 },
-              ),
+              ), 
               const SizedBox(
                 height: 50,
               ),
               ElevatedButton(
+                
                 style: ElevatedButton.styleFrom(
+                  backgroundColor: AppTheme.primary,
                   shape: const StadiumBorder(),
                 ),
                 onPressed: () async {
@@ -251,6 +291,14 @@ class _RegistrarScreenState extends State<RegistrarScreen> {
                           email: formValues['email']!,
                           password: formValues['contraseña']!,
                         );
+                        await insertData({
+                          'nombreApellidos': formValues['nombreApellidos'],
+                          'sexo': formValues['sexo'],
+                          'email': formValues['email'],
+                          'telefono': formValues['telefono'],
+                          'rol': formValues['rol'],
+                          // Agrega más campos según sea necesario
+                        });
                         // Redirigir al usuario a la pantalla de inicio de sesión
                         Navigator.pushReplacement(
                           context,

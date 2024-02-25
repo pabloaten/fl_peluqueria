@@ -1,13 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 
-class CalendarioYHorarioScreen extends StatelessWidget {
+class CalendarioYHorarioScreen extends StatefulWidget {
   const CalendarioYHorarioScreen({Key? key}) : super(key: key);
 
   @override
+  _CalendarioYHorarioScreenState createState() =>
+      _CalendarioYHorarioScreenState();
+}
+
+class _CalendarioYHorarioScreenState extends State<CalendarioYHorarioScreen> {
+  @override
   Widget build(BuildContext context) {
+    TimeOfDay? _horaSeleccionada;
+    // TODO: Implement the build method
     List<DateTime> nationalHolidays = [
-      // List of national holidays in Spain
       DateTime(DateTime.now().year, 1, 1), // New Year's Day
       DateTime(DateTime.now().year, 1, 6), // Epiphany
       DateTime(DateTime.now().year, 4, 19), // Good Friday
@@ -19,30 +26,75 @@ class CalendarioYHorarioScreen extends StatelessWidget {
       DateTime(DateTime.now().year, 12, 25), // Christmas Day
     ];
     var dateRange;
+    Future<void> _selectTime(BuildContext context) async {
+      TimeOfDay? selectedTime = await showTimePicker(
+        context: context,
+        initialTime: TimeOfDay.now(),
+      );
+      if (selectedTime != null) {
+        if (selectedTime.hour < 9 ||
+            selectedTime.hour > 20 ||
+            (selectedTime.minute != 0 && selectedTime.minute != 30)) {
+          // La hora seleccionada está fuera del rango permitido
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+                content: Text(
+                    'Por favor, selecciona una hora entre las 9:00 y las 20:30 en rangos de 30 minutos')),
+          );
+        } else {
+          // La hora seleccionada está dentro del rango permitido
+          setState(() {
+            selectedTime = _horaSeleccionada;
+          });
+        }
+      }
+    }
+
     return Scaffold(
         appBar: AppBar(
           title: const Text('Calendario y Horario'),
+          backgroundColor: Colors.grey.shade400,
         ),
-        body: Center(
-          child: Container(
-            color: Colors.grey.shade200,
-            child: SfDateRangePicker(
-              monthViewSettings:
-                  const DateRangePickerMonthViewSettings(firstDayOfWeek: 1),
-              cellBuilder: cellBuilder,
-              selectionColor: Colors.amber,
-              startRangeSelectionColor: Colors.grey,
-              endRangeSelectionColor: Colors.grey,
-              rangeSelectionColor: Colors.grey.shade100,
-              selectionMode: DateRangePickerSelectionMode.range,
-              showActionButtons: true,
-              cancelText: "Cancelar",
-              confirmText: "Aceptar",
-              onSubmit: (dateRange) {
-                print(dateRange);
-              },
+        body: Column(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(12.0),
+              height: 400.0,
+              color: Colors.grey.shade300,
+              child: SfDateRangePicker(
+                monthViewSettings:
+                    const DateRangePickerMonthViewSettings(firstDayOfWeek: 1),
+                cellBuilder: cellBuilder,
+                selectionColor: Colors.amber,
+                startRangeSelectionColor: Colors.grey,
+                endRangeSelectionColor: Colors.grey,
+                rangeSelectionColor: Colors.grey.shade100,
+                selectionMode: DateRangePickerSelectionMode.range,
+                showActionButtons: true,
+                cancelText: "Cancelar",
+                confirmText: "Aceptar",
+                onSubmit: (dateRange) {
+                  print(dateRange);
+                },
+              ),
             ),
-          ),
+            ElevatedButton(
+              onPressed: () {
+                _selectTime(context);
+              },
+              child: Text('Seleccionar hora de apertura:'),
+            ),
+            Text(
+                'Hora seleccionada: ${_horaSeleccionada?.format(context) ?? 'No seleccionada'}'),
+          ],
+        ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            //TODO logica para guardar la fecha seleccionada y la hora!
+          },
+          backgroundColor: Colors.blueGrey.shade100,
+          elevation: 15,
+          child: const Icon(Icons.add),
         ));
   }
 

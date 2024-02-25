@@ -16,9 +16,27 @@ class PeluquerosScreen extends StatelessWidget {
     onSearch: (value) => setState(() => searchValue = value),
     suggestions: _suggestions
   ),
-      body: Center(
-         child: Text('PeluquerosScreen'),
-      ),
+      body: Container(
+          decoration: const BoxDecoration(
+              image: DecorationImage(
+                  image: AssetImage('assets/fondoInicioSesion.png'))),
+          height: double.infinity,
+          child: ListView.builder(
+            scrollDirection: Axis.horizontal,
+            itemCount: peluquerosServices.peluqueros.length,
+            itemBuilder: (context, index) {
+              Peluquero peluquero = peluquerosServices.peluqueros[index];
+              return CustomWidgetPeluquero(
+                nombre: peluquero.nombre,
+                descripcion: peluquero.descripcion,
+                imagen: NetworkImage(peluquero.imagen),
+                usuario: usuario,
+                peluqueria: peluqueria,
+                peluquero: peluquero,
+              );
+            },
+          )
+        ),
     );
   }
   

@@ -1,4 +1,7 @@
 import 'package:fl_peluqueria/app_theme/app_theme.dart';
+import 'package:fl_peluqueria/screens/calendariosyhorarios_screen.dart';
+import 'package:fl_peluqueria/screens/peluqueros_screen.dart';
+import 'package:fl_peluqueria/screens/reservas_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -20,10 +23,10 @@ class HomeScreen extends StatelessWidget {
       child: Scaffold(
         appBar: AppBar(
           title: const Text('Inicio'),
-          backgroundColor: AppTheme.primary, 
-           automaticallyImplyLeading: false,// Coloca tu color primario aquí
+          backgroundColor: AppTheme.primary,
+          automaticallyImplyLeading: false,
         ),
-        endDrawer: _buildDrawer(context), // Cambio de drawer a endDrawer
+        endDrawer: _buildDrawer(context),
         body: Center(
           child: Text(user?.email ?? 'Usuario desconocido'),
         ),
@@ -38,7 +41,7 @@ class HomeScreen extends StatelessWidget {
         children: [
           DrawerHeader(
             decoration: BoxDecoration(
-              color: AppTheme.primary, // Coloca tu color primario aquí
+              color: AppTheme.primary,
             ),
             child: Text(
               'Menú',
@@ -54,6 +57,16 @@ class HomeScreen extends StatelessWidget {
           _buildMenuItem(context, 'Contactar por WhatsApp', () {
             whatsapp();
           }),
+          _buildMenuItem(context, 'Ver peluqueros', () {
+           _goToPeluquerosScreen(context);
+          }),
+          _buildMenuItem(context, 'Comprobación de horarios', () {
+           _goToCalendariosScreen(context);
+          }),
+           _buildMenuItem(context, 'Ver Reservas', () {
+           _goToReservasScreen(context);
+          }),
+          
           // Otros elementos del menú...
         ],
       ),
@@ -66,6 +79,24 @@ class HomeScreen extends StatelessWidget {
       onTap: onTap,
     );
   }
+void _goToPeluquerosScreen(BuildContext context) {
+  Navigator.push(
+    context,
+    MaterialPageRoute(builder: (context) => PeluquerosScreen()),
+  );
+}
+void _goToReservasScreen(BuildContext context) {
+  Navigator.push(
+    context,
+    MaterialPageRoute(builder: (context) =>ReservasScreen()),
+  );
+}
+void _goToCalendariosScreen(BuildContext context) {
+  Navigator.push(
+    context,
+    MaterialPageRoute(builder: (context) => CalendarioYHorarioScreen()),
+  );
+}
 
   // Función para abrir WhatsApp
   void whatsapp() async {

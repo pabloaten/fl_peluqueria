@@ -10,6 +10,8 @@ class _ReservasScreenState extends State<ReservasScreen> {
   CalendarFormat _calendarFormat = CalendarFormat.month;
   DateTime _focusedDay = DateTime.now();
   DateTime? _selectedDay;
+  TextEditingController _searchController = TextEditingController();
+  String _searchText = '';
 
   Map<DateTime, List<String>> _events = {
     DateTime.now(): ['Cita 1', 'Cita 2'], // Ejemplo de citas para el día actual
@@ -23,6 +25,25 @@ class _ReservasScreenState extends State<ReservasScreen> {
       ),
       body: Column(
         children: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: TextField(
+              controller: _searchController,
+              onChanged: (value) {
+                setState(() {
+                  _searchText = value;
+                });
+              },
+              decoration: InputDecoration(
+                labelText: 'Buscar',
+                hintText: 'Buscar por nombre de peluquero o datos del cliente',
+                prefixIcon: Icon(Icons.search),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8.0),
+                ),
+              ),
+            ),
+          ),
           TableCalendar(
             firstDay: DateTime.utc(_focusedDay.year, _focusedDay.month, 1),
             lastDay: DateTime.utc(_focusedDay.year, _focusedDay.month + 1, 0),
@@ -58,7 +79,7 @@ class _ReservasScreenState extends State<ReservasScreen> {
                       style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                     ),
                     SizedBox(height: 10),
-                    _buildCitasList(_selectedDay!),
+                    _buildFilteredCitasList(_selectedDay!),
                   ],
                 )
               : SizedBox(),
@@ -67,8 +88,13 @@ class _ReservasScreenState extends State<ReservasScreen> {
     );
   }
 
-  Widget _buildCitasList(DateTime day) {
+  Widget _buildFilteredCitasList(DateTime day) {
     List<String> citas = _events[day] ?? [];
+
+    // Filtrar las citas según el texto de búsqueda
+    if (_searchText.isNotEmpty) {
+      citas = citas.where((cita) => cita.toLowerCase().contains(_searchText.toLowerCase())).toList();
+    }
 
     if (citas.isEmpty) {
       return Text('No hay citas para este día');

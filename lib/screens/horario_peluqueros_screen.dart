@@ -64,6 +64,7 @@ class HorarioPeluquerosScreen extends StatelessWidget {
   itemBuilder: (context, index) {
     final time = calculateTime(index);
     final isAvailable = isSlotAvailable(time);
+    final isSelected = selectedTime.value == time;
     return GestureDetector(
       onTap: () {
         if (isAvailable) {
@@ -75,8 +76,9 @@ class HorarioPeluquerosScreen extends StatelessWidget {
       child: Card(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10.0), // Make button borders round
+          side: BorderSide(color: Colors.black), // Border color
         ),
-        color: Colors.black, // Set background color to black
+        color: isSelected ? Colors.black : Colors.white, // Change color based on selection
         child: Container(
           margin: const EdgeInsets.all(4.0), // Add margin around each button
           child: Padding(
@@ -86,11 +88,11 @@ class HorarioPeluquerosScreen extends StatelessWidget {
               children: [
                 Text(
                   time.format(context),
-                  style: TextStyle(color: Colors.white), // Set text color to white
+                  style: TextStyle(color: isSelected ? Colors.white : Colors.black), // Change text color based on selection
                 ),
                 Text(
                   isAvailable ? 'Disponible' : 'Bloqueado',
-                  style: TextStyle(color: Colors.white), // Set text color to white
+                  style: TextStyle(color: isSelected ? Colors.white : Colors.black), // Change text color based on selection
                 ),
               ],
             ),
@@ -104,7 +106,7 @@ class HorarioPeluquerosScreen extends StatelessWidget {
     );
   },
 ),
-SizedBox(height: 1.0), // Add space between the grid and the button
+SizedBox(height: 5.0), // Add space between the grid and the button
 ValueListenableBuilder<TimeOfDay?>(
   valueListenable: selectedTime,
   builder: (context, value, child) {

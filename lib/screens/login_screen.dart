@@ -29,7 +29,12 @@ class _InicioSesionScreenState extends State<InicioSesionScreen> {
           title: Text('Restablecer Contraseña'),
           content: TextField(
             controller: emailController,
-            decoration: InputDecoration(labelText: 'Correo Electrónico'),
+            decoration: InputDecoration(
+              labelText: 'Correo Electrónico',
+              labelStyle: TextStyle(
+                color: AppTheme.primary, // Color del labelText
+              ),
+            ),
           ),
           actions: <Widget>[
             TextButton(
@@ -186,8 +191,7 @@ class _InicioSesionScreenState extends State<InicioSesionScreen> {
               const SizedBox(height: 10),
               ElevatedButton(
                 onPressed: () async {
-                  String? resetEmail =
-                      await _showResetPasswordDialog(context);
+                  String? resetEmail = await _showResetPasswordDialog(context);
                   if (resetEmail != null && resetEmail.isNotEmpty) {
                     try {
                       await _auth.sendPasswordResetEmail(email: resetEmail);
@@ -219,8 +223,7 @@ class _InicioSesionScreenState extends State<InicioSesionScreen> {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(
-                        builder: (context) => RegistrarScreen()),
+                    MaterialPageRoute(builder: (context) => RegistrarScreen()),
                   );
                 },
                 child: const Text('Registrarse'),

@@ -12,7 +12,6 @@ class CalendarioYHorarioScreen extends StatefulWidget {
 class _CalendarioYHorarioScreenState extends State<CalendarioYHorarioScreen> {
   @override
   Widget build(BuildContext context) {
-    TimeOfDay? _horaSeleccionada;
     // TODO: Implement the build method
     List<DateTime> nationalHolidays = [
       DateTime(DateTime.now().year, 1, 1), // New Year's Day
@@ -26,6 +25,7 @@ class _CalendarioYHorarioScreenState extends State<CalendarioYHorarioScreen> {
       DateTime(DateTime.now().year, 12, 25), // Christmas Day
     ];
     var dateRange;
+    TimeOfDay? _horaSeleccionada;
     Future<void> _selectTime(BuildContext context) async {
       TimeOfDay? selectedTime = await showTimePicker(
         context: context,
@@ -78,14 +78,38 @@ class _CalendarioYHorarioScreenState extends State<CalendarioYHorarioScreen> {
                 },
               ),
             ),
-            ElevatedButton(
-              onPressed: () {
-                _selectTime(context);
-              },
-              child: Text('Seleccionar hora de apertura:'),
+            Padding(
+              padding: const EdgeInsets.only(
+                  top: 20.0), // agrega espacio en la parte superior
+              child: ElevatedButton(
+                onPressed: () {
+                  _selectTime(context);
+                },
+                child: Text('Seleccionar hora de apertura:'),
+              ),
             ),
-            Text(
-                'Hora seleccionada: ${_horaSeleccionada?.format(context) ?? 'No seleccionada'}'),
+            Padding(
+              padding: const EdgeInsets.only(
+                  top: 10.0), // agrega espacio en la parte superior
+              child: Text(
+                  'Hora Apertura: ${_horaSeleccionada?.format(context) ?? 'No seleccionada'}'),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(
+                  top: 20.0), // agrega espacio en la parte superior
+              child: ElevatedButton(
+                onPressed: () {
+                  _selectTime(context);
+                },
+                child: Text('Seleccionar hora de Cierre:'),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(
+                  top: 10.0), // agrega espacio en la parte superior
+              child: Text(
+                  'Hora Cierre: ${_horaSeleccionada?.format(context) ?? 'No seleccionada'}'),
+            ),
           ],
         ),
         floatingActionButton: FloatingActionButton(

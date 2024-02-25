@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:fl_peluqueria/screens/register_screen.dart';
 import 'package:fl_peluqueria/app_theme/app_theme.dart';
+import 'package:provider/provider.dart';
+import 'package:fl_peluqueria/services/peluqueros_services.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

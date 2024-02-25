@@ -47,4 +47,15 @@ class Usuario {
         "Telofono": telofono,
         "imagen": imagen,
       };
+
+      Usuario copy() => Usuario(
+      condiciones: this.condiciones,
+      contrasea: this.contrasea,
+      correo: this.correo,
+      nombre: this.nombre,
+      notificaciones: this.notificaciones,
+      sexo: this.sexo,
+      telofono: this.telofono,
+      imagen: this.imagen,
+    );
 }

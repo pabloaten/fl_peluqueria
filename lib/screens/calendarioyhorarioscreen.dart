@@ -17,8 +17,6 @@ class CalendarioYHorarioScreen extends StatelessWidget {
       DateTime(DateTime.now().year, 12, 6), // Constitution Day
       DateTime(DateTime.now().year, 12, 8), // Immaculate Conception
       DateTime(DateTime.now().year, 12, 25), // Christmas Day
-      DateTime(DateTime.saturday),
-      DateTime(DateTime.sunday),
     ];
     var dateRange;
     return Scaffold(
@@ -30,21 +28,16 @@ class CalendarioYHorarioScreen extends StatelessWidget {
             color: Colors.grey.shade200,
             child: SfDateRangePicker(
               monthViewSettings:
-                  //DateRangePickerMonthViewSettings(firstDayOfWeek: 1),
-                  DateRangePickerMonthViewSettings(
-                      specialDates: nationalHolidays),
+                  const DateRangePickerMonthViewSettings(firstDayOfWeek: 1),
               cellBuilder: cellBuilder,
               selectionColor: Colors.amber,
               startRangeSelectionColor: Colors.grey,
               endRangeSelectionColor: Colors.grey,
               rangeSelectionColor: Colors.grey.shade100,
-              //Modo de selección de fecha o rango de fechas
               selectionMode: DateRangePickerSelectionMode.range,
               showActionButtons: true,
-              //Texto de los botones de aceptar y cancelar
               cancelText: "Cancelar",
               confirmText: "Aceptar",
-              //recoger fecha o rango de fechas establecido.
               onSubmit: (dateRange) {
                 print(dateRange);
               },
@@ -53,27 +46,32 @@ class CalendarioYHorarioScreen extends StatelessWidget {
         ));
   }
 
+  @override
   Widget cellBuilder(BuildContext context, DateRangePickerCellDetails details) {
     DateTime _visibleDates = details.date;
     if (isSpecialDate(_visibleDates)) {
-      return Column(
-        children: [
-          Container(
-            child: Text(
-              details.date.day.toString(),
-              textAlign: TextAlign.center,
-            ),
+      return IgnorePointer(
+        ignoring: true, // Hace que los eventos de interacción sean ignorados
+        child: Container(
+          color: Colors.red,
+          child: Column(
+            children: [
+              Text(
+                details.date.day.toString(),
+                textAlign: TextAlign.center,
+              ),
+              Divider(
+                color: Colors.red.shade600,
+                height: 5,
+              ),
+              const Icon(
+                Icons.close_sharp,
+                size: 13,
+                color: Colors.black,
+              ),
+            ],
           ),
-          Divider(
-            color: Colors.red.shade600,
-            height: 5,
-          ),
-          Icon(
-            Icons.celebration,
-            size: 13,
-            color: Colors.red,
-          ),
-        ],
+        ),
       );
     } else {
       return Container(
@@ -99,9 +97,9 @@ class CalendarioYHorarioScreen extends StatelessWidget {
       DateTime(DateTime.now().year, 12, 25), // Christmas Day
     ];
     for (int j = 0; j < specialDates.length; j++) {
-      if (date.year == specialDates[j].year &&
+      if ((date.year == specialDates[j].year &&
               date.month == specialDates[j].month &&
-              date.day == specialDates[j].day ||
+              date.day == specialDates[j].day) ||
           date.weekday == DateTime.saturday ||
           date.weekday == DateTime.sunday) {
         return true;

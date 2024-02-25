@@ -1,4 +1,5 @@
 import 'package:easy_search_bar/easy_search_bar.dart';
+import 'package:easy_search_bar/easy_search_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:fl_peluqueria/screens/screens.dart';
 import 'package:fl_peluqueria/models/usuario.dart';

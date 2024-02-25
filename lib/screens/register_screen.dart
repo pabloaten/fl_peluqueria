@@ -79,7 +79,6 @@ class _RegistrarScreenState extends State<RegistrarScreen> {
               const SizedBox(
                 height: 15,
               ),
-             
               const SizedBox(
                 height: 20,
               ),
@@ -126,7 +125,7 @@ class _RegistrarScreenState extends State<RegistrarScreen> {
                   ],
                 ),
               ),
-               const SizedBox(
+              const SizedBox(
                 height: 17,
               ),
               TextFormField(
@@ -134,7 +133,11 @@ class _RegistrarScreenState extends State<RegistrarScreen> {
                 keyboardType: TextInputType.text,
                 decoration: InputDecoration(
                   labelText: 'Nombre y Apellidos',
-                  prefixIcon: Icon(Icons.person),
+                   labelStyle: TextStyle(
+                    color: AppTheme.primary, // Color del labelText
+                  ),
+                  suffixIcon: Icon(Icons.person,
+                    color: AppTheme.primary,),
                 ),
                 onChanged: (value) => formValues['nombreApellidos'] = value,
                 validator: (value) {
@@ -153,7 +156,11 @@ class _RegistrarScreenState extends State<RegistrarScreen> {
                 decoration: InputDecoration(
                   hintText: 'example@gmail.com',
                   labelText: 'E-mail',
-                  suffixIcon: Icon(Icons.alternate_email_outlined),
+                   labelStyle: TextStyle(
+                    color: AppTheme.primary, // Color del labelText
+                  ),
+                  suffixIcon: Icon(Icons.alternate_email_outlined,
+                    color: AppTheme.primary,),
                 ),
                 onChanged: (value) => formValues['email'] = value,
                 validator: (value) {
@@ -177,6 +184,9 @@ class _RegistrarScreenState extends State<RegistrarScreen> {
                 decoration: InputDecoration(
                   hintText: '********',
                   labelText: 'Contraseña',
+                   labelStyle: TextStyle(
+                    color: AppTheme.primary, // Color del labelText
+                  ),
                   suffixIcon: GestureDetector(
                     onTap: () {
                       setState(() {
@@ -185,7 +195,8 @@ class _RegistrarScreenState extends State<RegistrarScreen> {
                     },
                     child: Icon(_obscureTextContrasena
                         ? Icons.visibility
-                        : Icons.visibility_off),
+                        : Icons.visibility_off,
+                          color: AppTheme.primary,),
                   ),
                 ),
                 validator: (value) {
@@ -207,7 +218,11 @@ class _RegistrarScreenState extends State<RegistrarScreen> {
                 decoration: InputDecoration(
                   hintText: '********',
                   labelText: 'Confirmar contraseña',
+                  labelStyle: TextStyle(
+                    color: AppTheme.primary, // Color del labelText
+                  ),
                   suffixIcon: GestureDetector(
+                   
                     onTap: () {
                       setState(() {
                         _obscureTextConfirmar = !_obscureTextConfirmar;
@@ -215,7 +230,9 @@ class _RegistrarScreenState extends State<RegistrarScreen> {
                     },
                     child: Icon(_obscureTextConfirmar
                         ? Icons.visibility
-                        : Icons.visibility_off),
+                        : Icons.visibility_off,
+                          color: AppTheme.primary,),
+                        
                   ),
                 ),
                 validator: (value) {
@@ -229,9 +246,34 @@ class _RegistrarScreenState extends State<RegistrarScreen> {
                 },
               ),
               const SizedBox(
+                height: 17,
+              ),
+              TextFormField(
+                autocorrect: false,
+                keyboardType: TextInputType.phone,
+                decoration: InputDecoration(
+                  hintText: 'Número de teléfono',
+                  labelText: 'Teléfono',
+                  suffixIcon: Icon(
+                    Icons.phone,
+                    color: AppTheme.primary, // Color del icono
+                  ),
+                  labelStyle: TextStyle(
+                    color: AppTheme.primary, // Color del labelText
+                  ),
+                ),
+                onChanged: (value) => formValues['telefono'] = value,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Por favor, ingresa tu número de teléfono';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(
                 height: 30,
               ),
-             /*  SwitchListTile.adaptive(
+              /*  SwitchListTile.adaptive(
                 activeColor: const Color.fromARGB(255, 20, 40, 56),
                 value: _sliderEnabledPromociones,
                 title: const Text(
@@ -256,15 +298,20 @@ class _RegistrarScreenState extends State<RegistrarScreen> {
                   overflow: TextOverflow.fade,
                 ),
                 onChanged: (value) {
-                  _sliderEnabledPrivacidad = value;
-                  setState(() {});
+                  setState(() {
+                    _sliderEnabledPrivacidad = value;
+                  });
                 },
-              ), 
+              ),
+              if (!_sliderEnabledPrivacidad)
+                Text(
+                  'Por favor, acepta las condiciones de uso y privacidad',
+                  style: TextStyle(color: Colors.red),
+                ),
               const SizedBox(
                 height: 50,
               ),
               ElevatedButton(
-                
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppTheme.primary,
                   shape: const StadiumBorder(),

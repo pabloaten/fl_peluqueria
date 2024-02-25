@@ -1,36 +1,32 @@
 import 'package:fl_peluqueria/app_theme/app_theme.dart';
-import 'package:fl_peluqueria/screens/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'dart:io';
+import 'login_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-     
     User? user = FirebaseAuth.instance.currentUser;
-    if (user != null) {
-      // El usuario está autenticado, puedes acceder a sus datos
-      String displayName = user.displayName ?? ''; // Nombre de usuario
-      String email = user.email ?? ''; // Email del usuario
-      String uid = user.uid; // UID único del usuario
 
-      // Puedes utilizar esta información como desees en tu aplicación
-    } else {
-      // No hay usuario autenticado, el valor de user es null
-    }
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Inicio'),
-        backgroundColor: AppTheme.primary,
-      ),
-      endDrawer: _buildDrawer(context), // Cambio de drawer a endDrawer
-      body: Center(
-       child: Text(user?.email ?? 'Usuario desconocido'),
-
+    return WillPopScope(
+      onWillPop: () async {
+        // Impedir que la pantalla se pueda retroceder
+        return false;
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('Inicio'),
+          backgroundColor: AppTheme.primary, 
+           automaticallyImplyLeading: false,// Coloca tu color primario aquí
+        ),
+        endDrawer: _buildDrawer(context), // Cambio de drawer a endDrawer
+        body: Center(
+          child: Text(user?.email ?? 'Usuario desconocido'),
+        ),
       ),
     );
   }
@@ -42,7 +38,7 @@ class HomeScreen extends StatelessWidget {
         children: [
           DrawerHeader(
             decoration: BoxDecoration(
-              color: AppTheme.primary,
+              color: AppTheme.primary, // Coloca tu color primario aquí
             ),
             child: Text(
               'Menú',
@@ -58,7 +54,6 @@ class HomeScreen extends StatelessWidget {
           _buildMenuItem(context, 'Contactar por WhatsApp', () {
             whatsapp();
           }),
-         
           // Otros elementos del menú...
         ],
       ),
@@ -71,7 +66,6 @@ class HomeScreen extends StatelessWidget {
       onTap: onTap,
     );
   }
-  
 
   // Función para abrir WhatsApp
   void whatsapp() async {

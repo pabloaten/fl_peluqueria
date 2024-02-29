@@ -1,8 +1,8 @@
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:table_calendar/table_calendar.dart';
 import 'package:fl_peluqueria/models/reservas.dart';
 import 'package:fl_peluqueria/services/reservas_services.dart';
-import 'package:flutter/material.dart';
-import 'package:table_calendar/table_calendar.dart';
- // Importa tu servicio de reservas
 
 class ReservasScreen extends StatefulWidget {
   @override
@@ -15,10 +15,6 @@ class _ReservasScreenState extends State<ReservasScreen> {
   DateTime? _selectedDay;
   TextEditingController _searchController = TextEditingController();
   String _searchText = '';
-
-  Map<DateTime, List<String>> _events = {
-    DateTime.now(): ['Cita 1', 'Cita 2'], // Ejemplo de citas para el día actual
-  };
 
   // Instancia del servicio de reservas
   final ReservasServices _reservasService = ReservasServices();
@@ -71,9 +67,6 @@ class _ReservasScreenState extends State<ReservasScreen> {
                 _selectedDay = selectedDay;
               });
             },
-            eventLoader: (day) {
-              return _events[day] ?? [];
-            },
           ),
           SizedBox(height: 20),
           _selectedDay != null
@@ -82,9 +75,11 @@ class _ReservasScreenState extends State<ReservasScreen> {
                   children: [
                     Text(
                       'Citas para el día ${_selectedDay!.day}/${_selectedDay!.month}/${_selectedDay!.year}',
-                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                      style:
+                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                     ),
                     SizedBox(height: 10),
+                    // Llamada al método para construir la lista de citas filtrada por la fecha seleccionada
                     _buildFilteredCitasList(_selectedDay!),
                   ],
                 )
@@ -92,47 +87,43 @@ class _ReservasScreenState extends State<ReservasScreen> {
           SizedBox(height: 20),
           // Mostrar reservas al final de la pantalla
           Expanded(
-            child: FutureBuilder<List<Reservas>>(
-              future: _reservasService.loadReservas(), // Obtener las reservas del servicio
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Center(child: CircularProgressIndicator());
-                } else if (snapshot.hasError) {
-                  return Center(child: Text('Error al cargar las reservas'));
-                } else {
-                  final List<Reservas> reservas = snapshot.data ?? [];
-                  return ListView.builder(
-                    itemCount: reservas.length,
-                    itemBuilder: (context, index) {
-                      return ListTile(
-                        title: Text('Pollica'),
-                        // Agregar más información de la reserva si es necesario
-                      );
-                    },
-                  );
-                }
+            child: Consumer<ReservasServices>(
+              builder: (context, reservasProvider, _) {
+                final List<Reservas> reservas = reservasProvider.reservas;
+
+                // Filtra las reservas por la fecha seleccionada
+                final List<Reservas> reservasEnFechaSeleccionada = reservas
+                
+                    .where((reserva) =>
+                        reserva.fecha != null &&
+                        isSameDay(DateTime.parse(reserva.fecha[0]) ,_selectedDay))
+                    .toList();
+
+                return ListView.builder(
+                  itemCount: reservasEnFechaSeleccionada.length,
+                  itemBuilder: (context, index) {
+                    final reserva = reservasEnFechaSeleccionada[index];
+                    return ListTile(
+                      title: Text('A'),
+                      subtitle: Text(reserva.fecha?.toString() ?? ''),
+                    );
+                  },
+                );
               },
             ),
-          ),
+          )
         ],
       ),
     );
   }
 
   Widget _buildFilteredCitasList(DateTime day) {
-    List<String> citas = _events[day] ?? [];
-
-    // Filtrar las citas según el texto de búsqueda
-    if (_searchText.isNotEmpty) {
-      citas = citas.where((cita) => cita.toLowerCase().contains(_searchText.toLowerCase())).toList();
+    // Aquí puedes definir cómo se construye la lista de citas filtradas
+    if (_selectedDay != null) {
+      // Aquí puedes definir cómo se construye la lista de citas filtradas
+      return Container(); // Por ejemplo, puedes devolver un contenedor vacío si no necesitas mostrar citas filtradas
+    } else {
+      return SizedBox(); // Retorna un contenedor vacío si _selectedDay es nulo
     }
-
-    if (citas.isEmpty) {
-      return Text('No hay citas para este día');
-    }
-
-    return Column(
-      children: citas.map((cita) => ListTile(title: Text(cita))).toList(),
-    );
   }
 }

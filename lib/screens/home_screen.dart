@@ -1,9 +1,12 @@
+import 'package:fl_peluqueria/provider/user_role_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:fl_peluqueria/app_theme/app_theme.dart';
 import 'package:fl_peluqueria/screens/calendariosyhorarios_screen.dart';
 import 'package:fl_peluqueria/screens/peluqueros_screen.dart';
 import 'package:fl_peluqueria/screens/reservas_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'dart:io';
 import 'login_screen.dart';
 
@@ -17,6 +20,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
 
+
   final List<Widget> _screens = [
     HomeContent(),
     PeluquerosScreen(),
@@ -26,6 +30,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+        
     return Scaffold(
       appBar: AppBar(
         title: const Text('Inicio'),
@@ -126,12 +131,12 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  // Función para abrir WhatsApp
   void whatsapp() async {
-    var contact = "+880123232333";
-    var androidUrl = "whatsapp://send?phone=$contact&text=Hi, I need some help";
+    var contact = "+34695701397";
+    var androidUrl = "whatsapp://send?phone=$contact&text=Peluqueria Pelopo";
     var iosUrl =
         "https://wa.me/$contact?text=${Uri.parse('Hi, I need some help')}";
+    await launch(androidUrl);
   }
 
   // Función para cerrar sesión
@@ -160,7 +165,22 @@ class HomeContent extends StatelessWidget {
     User? user = FirebaseAuth.instance.currentUser;
 
     return Center(
-      child: Text(user?.email ?? 'Usuario desconocido'),
+       child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Text(
+              'User Role:',
+            ),
+            Consumer<UsuarioRoleProvider>(
+              builder: (context, userRoleProvider, child) {
+                return Text(
+                userRoleProvider.user?.rol ?? 'Hola', // Muestra el rol del usuario
+                  style: Theme.of(context).textTheme.headline4,
+                );
+              },
+            ),
+          ],
+        ),
     );
   }
 }

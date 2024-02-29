@@ -16,10 +16,10 @@ class UsuariosServices extends ChangeNotifier {
   bool isLoading = true;
 
  UsuariosServices(){
-    this.loadProductos();
+    this.loadUsarios();
   }
 
-  Future<List<Usuario>> loadProductos() async {
+  Future<List<Usuario>> loadUsarios() async {
 
     this.isLoading = true;
     notifyListeners();
@@ -40,7 +40,16 @@ class UsuariosServices extends ChangeNotifier {
     notifyListeners();
 
     return usuarios;
-    //print(this.producto[1].nombre);
+  }
+
+  Future<String> updateUsuario( Usuario usuario) async {
+    final url = Uri.https( _baseURL, 'usuarios/${ usuario.id }.json' );
+    final resp = await http.put( url, body: usuario.toJson() );
+    final decodedData = resp.body;
+
+    print( decodedData);
+
+    return usuario.id!;
   }
 
 

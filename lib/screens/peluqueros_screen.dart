@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:fl_peluqueria/models/usuario.dart';
 import 'package:fl_peluqueria/services/usuarios_services.dart';
 import 'package:provider/provider.dart';
+import 'package:fl_peluqueria/screens/editar_usuario.dart';
 
 class PeluquerosScreen extends StatelessWidget {
   const PeluquerosScreen({Key? key}) : super(key: key);
@@ -24,11 +25,16 @@ class PeluquerosScreen extends StatelessWidget {
               itemBuilder: (context, index) {
                 final Usuario usuario = usuariosServices.usuarios[index];
                 return ListTile(
+                  leading: Icon(Icons.person),
                   title: Text(usuario.nombreApellidos),
                   subtitle: Text(usuario.email),
                   onTap: () {
-                    // Acción al hacer tap en el usuario
-                    // Por ejemplo, puedes navegar a otra pantalla para ver más detalles del usuario
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => EditarUsuarioScreen(usuario: usuario),
+                      ),
+                    );
                   },
                 );
               },

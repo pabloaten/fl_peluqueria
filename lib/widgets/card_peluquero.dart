@@ -10,13 +10,13 @@ class PeluqueroCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       child: ListTile(
-        leading: CircleAvatar(
-          // Aquí podrías cargar la imagen del usuario si está disponible
-          // Ejemplo: usuario.imagen != null ? Image.network(usuario.imagen!) : Icon(Icons.person),
-          child: Icon(Icons.person),
+        leading: const CircleAvatar(
+          child: Icon(Icons.person, color: Colors.red,),
+          
         ),
         title: Text(usuario.nombreApellidos ?? ''),
         subtitle: Text(usuario.email ?? ''),
+        
         // Puedes agregar más información del usuario aquí, como el correo electrónico, etc.
       ),
     );

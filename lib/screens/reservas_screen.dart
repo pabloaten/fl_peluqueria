@@ -1,5 +1,8 @@
+import 'package:fl_peluqueria/models/reservas.dart';
+import 'package:fl_peluqueria/services/reservas_services.dart';
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
+ // Importa tu servicio de reservas
 
 class ReservasScreen extends StatefulWidget {
   @override
@@ -16,6 +19,9 @@ class _ReservasScreenState extends State<ReservasScreen> {
   Map<DateTime, List<String>> _events = {
     DateTime.now(): ['Cita 1', 'Cita 2'], // Ejemplo de citas para el día actual
   };
+
+  // Instancia del servicio de reservas
+  final ReservasServices _reservasService = ReservasServices();
 
   @override
   Widget build(BuildContext context) {
@@ -83,6 +89,31 @@ class _ReservasScreenState extends State<ReservasScreen> {
                   ],
                 )
               : SizedBox(),
+          SizedBox(height: 20),
+          // Mostrar reservas al final de la pantalla
+          Expanded(
+            child: FutureBuilder<List<Reservas>>(
+              future: _reservasService.loadReservas(), // Obtener las reservas del servicio
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Center(child: CircularProgressIndicator());
+                } else if (snapshot.hasError) {
+                  return Center(child: Text('Error al cargar las reservas'));
+                } else {
+                  final List<Reservas> reservas = snapshot.data ?? [];
+                  return ListView.builder(
+                    itemCount: reservas.length,
+                    itemBuilder: (context, index) {
+                      return ListTile(
+                        title: Text('Pollica'),
+                        // Agregar más información de la reserva si es necesario
+                      );
+                    },
+                  );
+                }
+              },
+            ),
+          ),
         ],
       ),
     );

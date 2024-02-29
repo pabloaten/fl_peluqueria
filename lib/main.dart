@@ -1,6 +1,7 @@
 import 'package:fl_peluqueria/screens/home_screen.dart';
 import 'package:fl_peluqueria/screens/login_screen.dart';
 import 'package:fl_peluqueria/screens/peluqueros_screen.dart';
+import 'package:fl_peluqueria/services/reservas_services.dart';
 import 'package:fl_peluqueria/services/usuarios_services.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -45,7 +46,8 @@ class AppState extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-           ChangeNotifierProvider(create: (context) => UsuariosServices())
+           ChangeNotifierProvider(create: (context) => UsuariosServices()),
+           ChangeNotifierProvider(create: (context) =>ReservasServices()),
       ],
       child: MyApp(),
     );

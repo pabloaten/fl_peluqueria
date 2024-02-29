@@ -20,7 +20,7 @@ class UsuariosServices extends ChangeNotifier {
   }
 
   Future<List<Usuario>> loadProductos() async {
-    //this.isLoading = true;
+    this.isLoading = true;
     notifyListeners();
 
     final url = Uri.https(_baseURL, 'Usuarios.json');
@@ -34,16 +34,16 @@ class UsuariosServices extends ChangeNotifier {
       this.usuarios.add(tempProduct);
     });
 
-    //this.isLoading = false;
+    this.isLoading = false;
     notifyListeners();
-    return this.usuarios;
+    return usuarios;
   }
 
-  Future saveOrCreateUsuario(Usuario? usuario) async {
+  Future saveOrCreateUsuario(Usuario usuario) async {
     isSaving = true;
     notifyListeners();
 
-    if (usuario!.id == null) {
+    if (usuario.id == null) {
       //Crear
     } else {
       //Actualizar
@@ -55,6 +55,8 @@ class UsuariosServices extends ChangeNotifier {
     final url = Uri.https(_baseURL, 'Usuarios/${usuario.id}.json');
     final resp = await http.put(url, body: usuario.toJson());
     final decodedData = resp.body;
+
+    print( decodedData);
 
     return usuario.id!;
   }

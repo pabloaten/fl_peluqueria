@@ -69,7 +69,7 @@ class _CalendarioYHorarioScreenState extends State<CalendarioYHorarioScreen> {
                 selectionColor: Colors.amber,
                 startRangeSelectionColor: Colors.grey,
                 endRangeSelectionColor: Colors.grey,
-                rangeSelectionColor: Colors.grey.shade100,
+                rangeSelectionColor: Colors.grey.shade800,
                 selectionMode: DateRangePickerSelectionMode.range,
                 showActionButtons: true,
                 cancelText: "Cancelar",
@@ -153,7 +153,7 @@ class _CalendarioYHorarioScreenState extends State<CalendarioYHorarioScreen> {
       if ((date.year == specialDates[j].year &&
               date.month == specialDates[j].month &&
               date.day == specialDates[j].day) ||
-          date.weekday == DateTime.saturday ||
+         // date.weekday == DateTime.saturday ||
           date.weekday == DateTime.sunday) {
         return true;
       }

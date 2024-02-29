@@ -1,12 +1,13 @@
 import 'package:fl_peluqueria/screens/home_screen.dart';
 import 'package:fl_peluqueria/screens/login_screen.dart';
 import 'package:fl_peluqueria/screens/peluqueros_screen.dart';
+import 'package:fl_peluqueria/services/usuarios_services.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:fl_peluqueria/screens/register_screen.dart';
 import 'package:fl_peluqueria/app_theme/app_theme.dart';
 import 'package:provider/provider.dart';
-import 'package:fl_peluqueria/services/peluqueros_services.dart';
+import 'package:fl_peluqueria/providers/usuario_form_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -22,7 +23,7 @@ void main() async {
     measurementId: "G-YJG8D4XX75"
     ),
   );
-  runApp(const MyApp());
+  runApp(AppState());
 }
 
 class MyApp extends StatelessWidget {
@@ -34,6 +35,19 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       home: const InicioSesionScreen(),
        theme: AppTheme.lightTheme,
+    );
+  }
+}
+
+class AppState extends StatelessWidget {
+
+  @override
+  Widget build(BuildContext context) {
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (context) => UsuariosServices())
+      ],
+      child: MyApp(),
     );
   }
 }

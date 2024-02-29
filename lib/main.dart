@@ -1,3 +1,4 @@
+import 'package:fl_peluqueria/provider/user_role_provider.dart';
 import 'package:fl_peluqueria/screens/home_screen.dart';
 import 'package:fl_peluqueria/screens/login_screen.dart';
 import 'package:fl_peluqueria/screens/peluqueros_screen.dart';
@@ -34,7 +35,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: const InicioSesionScreen(),
+      home: const HomeScreen(),
        theme: AppTheme.lightTheme,
     );
   }
@@ -48,6 +49,7 @@ class AppState extends StatelessWidget {
       providers: [
            ChangeNotifierProvider(create: (context) => UsuariosServices()),
            ChangeNotifierProvider(create: (context) =>ReservasServices()),
+            ChangeNotifierProvider( create: (context) => UsuarioRoleProvider()),
       ],
       child: MyApp(),
     );

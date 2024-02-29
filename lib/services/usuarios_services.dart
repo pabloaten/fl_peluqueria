@@ -40,6 +40,46 @@ class UsuariosServices extends ChangeNotifier {
     notifyListeners();
 
     return usuarios;
+    //print(this.producto[1].nombre);
+  }
+
+ Future<Usuario?> buscarUsuarioPorEmail(String email) async {
+    try {
+      // Realiza la búsqueda local en la lista de usuarios
+      Usuario? usuarioEncontrado = usuarios.firstWhere(
+        (usuario) => usuario.email == email,
+        
+      );
+
+      // Si se encuentra el usuario localmente, devuelve la instancia
+      if (usuarioEncontrado != null) {
+        return usuarioEncontrado;
+      }
+
+      // Si no se encuentra localmente, realiza la búsqueda en la base de datos
+      final url = Uri.https(_baseURL, 'usuarios.json');
+      final resp = await http.get(url);
+
+      final Map<String, dynamic> usuariosMap = json.decode(resp.body);
+
+      if (usuariosMap.isNotEmpty) {
+        // Itera sobre los usuarios en la base de datos para buscar por correo electrónico
+        for (var key in usuariosMap.keys) {
+          final usuarioData = usuariosMap[key];
+          if (usuarioData['email'] == email) {
+            final usuario = Usuario.fromMap(usuarioData);
+            return usuario;
+          }
+        }
+      }
+
+      // Si no se encuentra ningún usuario con el correo electrónico dado, devuelve null
+      return null;
+    } catch (e) {
+      // Maneja cualquier error que pueda ocurrir durante la búsqueda
+      print('Error al buscar usuario por email: $e');
+      return null;
+    }
   }
 
   Future<String?> updateUsuario(Usuario usuario) async {

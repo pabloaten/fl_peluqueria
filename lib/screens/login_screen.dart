@@ -1,9 +1,15 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:fl_peluqueria/app_theme/app_theme.dart';
+import 'package:fl_peluqueria/models/usuario.dart';
+import 'package:fl_peluqueria/provider/user_role_provider.dart';
 import 'package:fl_peluqueria/screens/register_screen.dart';
+import 'package:fl_peluqueria/services/usuarios_services.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fl_peluqueria/screens/home_screen.dart';
 import 'package:local_auth/local_auth.dart';
+import 'package:provider/provider.dart';
 
 class InicioSesionScreen extends StatefulWidget {
   const InicioSesionScreen({Key? key}) : super(key: key);
@@ -77,16 +83,27 @@ class _InicioSesionScreenState extends State<InicioSesionScreen> {
   }
 
   Future<void> signIn() async {
+    final UsuariosServices _usuariosServices =
+        UsuariosServices(); // Instancia del servicio de usuarios
     try {
       UserCredential userCredential = await _auth.signInWithEmailAndPassword(
         email: email,
         password: password,
       );
-      print('Usuario autenticado: ${userCredential.user!.uid}');
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => HomeScreen()),
-      );
+      final String? userEmail = userCredential.user!.email;
+      if (userEmail != null) {
+        final user = await _usuariosServices.buscarUsuarioPorEmail(userEmail);
+
+        if (user != null) {
+          // Si se encuentra el usuario, actualizar el rol en el UsuarioRoleProvider
+          Provider.of<UsuarioRoleProvider>(context, listen: false)
+              .setUser(user);
+        }
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => HomeScreen()),
+        );
+      }
     } catch (e) {
       print('Error al iniciar sesión: $e');
       setState(() {

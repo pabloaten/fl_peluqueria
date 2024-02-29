@@ -1,41 +1,41 @@
-//import 'package:easy_search_bar/easy_search_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:fl_peluqueria/models/usuario.dart';
 import 'package:fl_peluqueria/services/usuarios_services.dart';
 import 'package:provider/provider.dart';
-import 'package:fl_peluqueria/widgets/card_peluquero.dart';
-import 'package:fl_peluqueria/providers/usuario_form_provider.dart';
+
 class PeluquerosScreen extends StatelessWidget {
-   
   const PeluquerosScreen({Key? key}) : super(key: key);
-  
+
   @override
   Widget build(BuildContext context) {
-    final usuariosServices = Provider.of<UsuariosServices>(context);
-    // searchValue='';
-    //final List<String> _suggestions = ['Afeganistan', 'Albania', 'Algeria', 'Australia', 'Brazil', 'German', 'Madagascar', 'Mozambique', 'Portugal', 'Zambia'];
     return Scaffold(
       appBar: AppBar(
-        title: Text('Usuarios'),
+        title: Text('Lista de Usuarios'),
       ),
-      /*appBar: EasySearchBar(
-    title: Text('Gestión peluqueros'),
-    onSearch: (value) => setState(() => searchValue = value),
-    suggestions: _suggestions
-  ),*/
-      body: ListView.builder(
-        itemCount: usuariosServices.usuarios.length,
-        itemBuilder: ( BuildContext context, index) => GestureDetector(
-          onTap: () {
-            usuariosServices.usuarioSeleccionado = usuariosServices.usuarios[index].copy();
-            Navigator.pushNamed(context, 'usuario');
-          },
-          child: PeluqueroCard(
-            usuario:usuariosServices.usuarios[index],
-          )
-        )
+      body: Consumer<UsuariosServices>(
+        builder: (context, usuariosServices, _) {
+          if (usuariosServices.isLoading) {
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          } else {
+            return ListView.builder(
+              itemCount: usuariosServices.usuarios.length,
+              itemBuilder: (context, index) {
+                final Usuario usuario = usuariosServices.usuarios[index];
+                return ListTile(
+                  title: Text(usuario.nombreApellidos),
+                  subtitle: Text(usuario.email),
+                  onTap: () {
+                    // Acción al hacer tap en el usuario
+                    // Por ejemplo, puedes navegar a otra pantalla para ver más detalles del usuario
+                  },
+                );
+              },
+            );
+          }
+        },
       ),
     );
   }
-  
-  //setState(String Function() param0) {}
 }

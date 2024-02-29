@@ -105,12 +105,12 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  void _goToPeluquerosScreen(BuildContext context) {
+/*   void _goToPeluquerosScreen(BuildContext context) {
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => PeluquerosScreen()),
     );
-  }
+  } */
 
   void _goToReservasScreen(BuildContext context) {
     Navigator.push(

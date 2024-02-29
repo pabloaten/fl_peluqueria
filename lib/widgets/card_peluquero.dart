@@ -15,8 +15,8 @@ class PeluqueroCard extends StatelessWidget {
           // Ejemplo: usuario.imagen != null ? Image.network(usuario.imagen!) : Icon(Icons.person),
           child: Icon(Icons.person),
         ),
-        title: Text(usuario.nombre ?? ''),
-        subtitle: Text(usuario.correo ?? ''),
+        title: Text(usuario.nombreApellidos ?? ''),
+        subtitle: Text(usuario.email ?? ''),
         // Puedes agregar más información del usuario aquí, como el correo electrónico, etc.
       ),
     );

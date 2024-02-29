@@ -1,61 +1,48 @@
 import 'dart:convert';
+
 class Usuario {
-  Usuario({
-    required this.condiciones,
-    required this.contrasea,
-    required this.correo,
-    required this.nombre,
-    required this.notificaciones,
-    required this.sexo,
-    required this.telofono,
-    this.id,
-    this.imagen,
-  });
+    String email;
+    String nombreApellidos;
+    String rol;
+    String sexo;
+    String telefono;
 
-  bool? condiciones;
-  String? contrasea;
-  String? correo;
-  String? nombre;
-  bool? notificaciones;
-  String? sexo;
-  String? telofono;
-  String? id;
-  String? imagen;
+    Usuario({
+        required this.email,
+        required this.nombreApellidos,
+        required this.rol,
+        required this.sexo,
+        required this.telefono,
+    });
 
-  factory Usuario.fromJson(String str) => Usuario.fromMap(json.decode(str));
+    factory Usuario.fromRawJson(String str) => Usuario.fromMap(json.decode(str));
 
-  String toJson() => json.encode(toMap());
+    String toRawJson() => json.encode(toMap());
 
-  factory Usuario.fromMap(Map<String, dynamic> json) => Usuario(
-        condiciones: json["Condiciones"],
-        contrasea: json["Contraseña"],
-        correo: json["Correo"],
-        nombre: json["Nombre"],
-        notificaciones: json["Notificaciones"],
-        sexo: json["Sexo"],
-        telofono: json["Telofono"],
-        imagen: json["Imagen"],
-      );
-
-  Map<String, dynamic> toMap() => {
-        "Condiciones": condiciones,
-        "Contraseña": contrasea,
-        "Correo": correo,
-        "Nombre": nombre,
-        "Notificaciones": notificaciones,
-        "Sexo": sexo,
-        "Telofono": telofono,
-        "imagen": imagen,
-      };
-
-      Usuario copy() => Usuario(
-      condiciones: this.condiciones,
-      contrasea: this.contrasea,
-      correo: this.correo,
-      nombre: this.nombre,
-      notificaciones: this.notificaciones,
-      sexo: this.sexo,
-      telofono: this.telofono,
-      imagen: this.imagen,
+    factory Usuario.fromMap(Map<String, dynamic> json) => Usuario(
+        email: json["email"],
+        nombreApellidos: json["nombreApellidos"],
+        rol: json["rol"],
+        sexo: json["sexo"],
+        telefono: json["telefono"],
     );
+
+    Map<String, dynamic> toMap() => {
+        "email": email,
+        "nombreApellidos": nombreApellidos,
+        "rol": rol,
+        "sexo": sexo,
+        "telefono": telefono,
+    };
+     Usuario copy() => Usuario(
+        email: this.email,
+        nombreApellidos: this.nombreApellidos,
+        rol: this.rol,
+        sexo: this.sexo,
+        telefono: this.telefono,
+       
+      );
 }
+
+ 
+

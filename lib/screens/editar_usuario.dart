@@ -1,12 +1,12 @@
-
-import 'package:fl_peluqueria/models/usuario.dart';
 import 'package:flutter/material.dart';
+import 'package:fl_peluqueria/models/usuario.dart';
 import 'package:fl_peluqueria/services/usuarios_services.dart';
 
 class EditarUsuarioScreen extends StatefulWidget {
   final Usuario usuario;
+  final UsuariosServices usuariosServices;
 
-  const EditarUsuarioScreen({Key? key, required this.usuario}) : super(key: key);
+  const EditarUsuarioScreen({Key? key, required this.usuario, required this.usuariosServices}) : super(key: key);
 
   @override
   _EditarUsuarioScreenState createState() => _EditarUsuarioScreenState();
@@ -14,19 +14,19 @@ class EditarUsuarioScreen extends StatefulWidget {
 
 class _EditarUsuarioScreenState extends State<EditarUsuarioScreen> {
   late TextEditingController _nombreController;
-  late TextEditingController _emailController;
+  late TextEditingController _rolController;
 
   @override
   void initState() {
     super.initState();
     _nombreController = TextEditingController(text: widget.usuario.nombreApellidos);
-    _emailController = TextEditingController(text: widget.usuario.email);
+    _rolController = TextEditingController(text: widget.usuario.rol);
   }
 
   @override
   void dispose() {
     _nombreController.dispose();
-    _emailController.dispose();
+    _rolController.dispose();
     super.dispose();
   }
 
@@ -46,16 +46,27 @@ class _EditarUsuarioScreenState extends State<EditarUsuarioScreen> {
               decoration: InputDecoration(labelText: 'Nombre y Apellidos'),
             ),
             TextField(
-              controller: _emailController,
-              decoration: InputDecoration(labelText: 'Email'),
+              controller: _rolController,
+              decoration: InputDecoration(labelText: 'Rol'),
             ),
             SizedBox(height: 16.0),
             ElevatedButton(
-              onPressed: () {
-                // Aquí puedes guardar los cambios del usuario
-                // Por ejemplo, puedes llamar a un método en tu servicio de usuarios para actualizar los datos
-                // usuariosServices.actualizarUsuario(widget.usuario.id, _nombreController.text, _emailController.text);
-                Navigator.pop(context); // Volver a la pantalla anterior después de guardar los cambios
+              onPressed: () async {
+                // Actualizar los datos del usuario con los valores de los campos de texto
+                widget.usuario.nombreApellidos = _nombreController.text;
+                widget.usuario.rol = _rolController.text;
+                
+                // Llamar al método para actualizar el usuario
+                final String? result = await widget.usuariosServices.updateUsuario(widget.usuario);
+                
+                if (result != null) {
+                  print('Usuario actualizado exitosamente');
+                } else {
+                  print('Error al actualizar el usuario');
+                }
+                
+                // Volver a la pantalla anterior después de guardar los cambios
+                Navigator.pop(context); 
               },
               child: Text('Guardar Cambios'),
             ),

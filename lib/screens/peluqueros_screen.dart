@@ -32,7 +32,7 @@ class PeluquerosScreen extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => EditarUsuarioScreen(usuario: usuario),
+                        builder: (context) => EditarUsuarioScreen(usuario: usuario, usuariosServices: usuariosServices),
                       ),
                     );
                   },

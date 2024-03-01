@@ -47,9 +47,9 @@ class _ReservasScreenState extends State<ReservasScreen> {
             ),
           ),
           TableCalendar(
-            firstDay: DateTime.utc(_focusedDay.year, _focusedDay.month, 1),
-            lastDay: DateTime.utc(_focusedDay.year, _focusedDay.month + 1, 0),
-            focusedDay: _focusedDay,
+            firstDay: DateTime.now().subtract(Duration(days: 365)), // Resta un año al día actual
+            lastDay: DateTime.now().add(Duration(days: 365)), // Añade un año al día actual
+            focusedDay: _focusedDay, // Establece el día enfocado inicialmente
             calendarFormat: _calendarFormat,
             onFormatChanged: (format) {
               setState(() {
@@ -57,14 +57,16 @@ class _ReservasScreenState extends State<ReservasScreen> {
               });
             },
             onPageChanged: (focusedDay) {
-              _focusedDay = focusedDay;
+              setState(() {
+                _focusedDay = focusedDay; // Actualiza el día enfocado al cambiar de página en el calendario
+              });
             },
             selectedDayPredicate: (day) {
               return isSameDay(_selectedDay, day);
             },
             onDaySelected: (selectedDay, focusedDay) {
               setState(() {
-                _selectedDay = selectedDay;
+                _selectedDay = selectedDay; // Actualiza solo el día seleccionado al seleccionar un día en el calendario
               });
             },
           ),
@@ -75,15 +77,14 @@ class _ReservasScreenState extends State<ReservasScreen> {
                   children: [
                     Text(
                       'Citas para el día ${_selectedDay!.day}/${_selectedDay!.month}/${_selectedDay!.year}',
-                      style:
-                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                     ),
                     SizedBox(height: 10),
                     // Llamada al método para construir la lista de citas filtrada por la fecha seleccionada
                     _buildFilteredCitasList(_selectedDay!),
                   ],
                 )
-              : SizedBox(),
+              : Container(), // Cambio aquí de SizedBox a Container
           SizedBox(height: 20),
           // Mostrar reservas al final de la pantalla
           Expanded(
@@ -93,10 +94,10 @@ class _ReservasScreenState extends State<ReservasScreen> {
 
                 // Filtra las reservas por la fecha seleccionada
                 final List<Reservas> reservasEnFechaSeleccionada = reservas
-                
                     .where((reserva) =>
                         reserva.fecha != null &&
-                        isSameDay(DateTime.parse(reserva.fecha[0]) ,_selectedDay))
+                        isSameDay(
+                            DateTime.parse(reserva.fecha[0]), _selectedDay))
                     .toList();
 
                 return ListView.builder(
@@ -104,8 +105,14 @@ class _ReservasScreenState extends State<ReservasScreen> {
                   itemBuilder: (context, index) {
                     final reserva = reservasEnFechaSeleccionada[index];
                     return ListTile(
-                      title: Text('A'),
-                      subtitle: Text(reserva.fecha?.toString() ?? ''),
+                      title: Text('Cita Fecha: ${reserva.fecha}'), // Muestra la fecha de la reserva
+                      trailing: ElevatedButton(
+                        onPressed: () {
+                          // Mostrar detalles de la reserva al presionar el botón
+                          _showReservaDetails(context, reserva);
+                        },
+                        child: Text('Detalles'),
+                      ),
                     );
                   },
                 );
@@ -125,5 +132,37 @@ class _ReservasScreenState extends State<ReservasScreen> {
     } else {
       return SizedBox(); // Retorna un contenedor vacío si _selectedDay es nulo
     }
+  }
+
+  // Función para mostrar detalles de la reserva en un diálogo
+  void _showReservaDetails(BuildContext context, Reservas reserva) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Detalles de la Reserva'),
+          content: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text('Fecha: ${reserva.fecha}'),
+              Text('Cancelada: ${reserva.cancelada ? 'Sí' : 'No'}'),
+              Text('Pagada: ${reserva.pagada ? 'Sí' : 'No'}'),
+              Text('Peluquero: ${reserva.peluquero}'),
+              Text('Servicios: ${reserva.servicios.join(', ')}'),
+              // Agrega más detalles de la reserva según sea necesario
+            ],
+          ),
+          actions: [
+            ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('Cerrar'),
+            ),
+          ],
+        );
+      },
+    );
   }
 }

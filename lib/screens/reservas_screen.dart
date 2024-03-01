@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:table_calendar/table_calendar.dart';
+import 'package:intl/intl.dart';
 import 'package:fl_peluqueria/models/reservas.dart';
 import 'package:fl_peluqueria/services/reservas_services.dart';
 
@@ -47,9 +48,9 @@ class _ReservasScreenState extends State<ReservasScreen> {
             ),
           ),
           TableCalendar(
-            firstDay: DateTime.now().subtract(Duration(days: 365)), // Resta un año al día actual
-            lastDay: DateTime.now().add(Duration(days: 365)), // Añade un año al día actual
-            focusedDay: _focusedDay, // Establece el día enfocado inicialmente
+            firstDay: DateTime.now().subtract(Duration(days: 365)),
+            lastDay: DateTime.now().add(Duration(days: 365)),
+            focusedDay: _focusedDay,
             calendarFormat: _calendarFormat,
             onFormatChanged: (format) {
               setState(() {
@@ -58,7 +59,7 @@ class _ReservasScreenState extends State<ReservasScreen> {
             },
             onPageChanged: (focusedDay) {
               setState(() {
-                _focusedDay = focusedDay; // Actualiza el día enfocado al cambiar de página en el calendario
+                _focusedDay = focusedDay;
               });
             },
             selectedDayPredicate: (day) {
@@ -66,7 +67,7 @@ class _ReservasScreenState extends State<ReservasScreen> {
             },
             onDaySelected: (selectedDay, focusedDay) {
               setState(() {
-                _selectedDay = selectedDay; // Actualiza solo el día seleccionado al seleccionar un día en el calendario
+                _selectedDay = selectedDay;
               });
             },
           ),
@@ -76,23 +77,20 @@ class _ReservasScreenState extends State<ReservasScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Citas para el día ${_selectedDay!.day}/${_selectedDay!.month}/${_selectedDay!.year}',
+                      'Citas para el día ${DateFormat('dd/MM/yyyy').format(_selectedDay!)}',
                       style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                     ),
                     SizedBox(height: 10),
-                    // Llamada al método para construir la lista de citas filtrada por la fecha seleccionada
                     _buildFilteredCitasList(_selectedDay!),
                   ],
                 )
-              : Container(), // Cambio aquí de SizedBox a Container
+              : Container(),
           SizedBox(height: 20),
-          // Mostrar reservas al final de la pantalla
           Expanded(
             child: Consumer<ReservasServices>(
               builder: (context, reservasProvider, _) {
                 final List<Reservas> reservas = reservasProvider.reservas;
 
-                // Filtra las reservas por la fecha seleccionada
                 final List<Reservas> reservasEnFechaSeleccionada = reservas
                     .where((reserva) =>
                         reserva.fecha != null &&
@@ -105,10 +103,10 @@ class _ReservasScreenState extends State<ReservasScreen> {
                   itemBuilder: (context, index) {
                     final reserva = reservasEnFechaSeleccionada[index];
                     return ListTile(
-                      title: Text('Cita Fecha: ${reserva.fecha}'), // Muestra la fecha de la reserva
+                      title: Text(
+                          'Cita Fecha: ${DateFormat('dd/MM/yyyy HH:mm').format(DateTime.parse(reserva.fecha!.first))}'),
                       trailing: ElevatedButton(
                         onPressed: () {
-                          // Mostrar detalles de la reserva al presionar el botón
                           _showReservaDetails(context, reserva);
                         },
                         child: Text('Detalles'),
@@ -125,16 +123,13 @@ class _ReservasScreenState extends State<ReservasScreen> {
   }
 
   Widget _buildFilteredCitasList(DateTime day) {
-    // Aquí puedes definir cómo se construye la lista de citas filtradas
     if (_selectedDay != null) {
-      // Aquí puedes definir cómo se construye la lista de citas filtradas
-      return Container(); // Por ejemplo, puedes devolver un contenedor vacío si no necesitas mostrar citas filtradas
+      return Container();
     } else {
-      return SizedBox(); // Retorna un contenedor vacío si _selectedDay es nulo
+      return SizedBox();
     }
   }
 
-  // Función para mostrar detalles de la reserva en un diálogo
   void _showReservaDetails(BuildContext context, Reservas reserva) {
     showDialog(
       context: context,
@@ -145,12 +140,12 @@ class _ReservasScreenState extends State<ReservasScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text('Fecha: ${reserva.fecha}'),
+              Text('Fecha y Hora: ${DateFormat('dd/MM/yyyy HH:mm').format(DateTime.parse(reserva.fecha!.first))}'),
               Text('Cancelada: ${reserva.cancelada ? 'Sí' : 'No'}'),
               Text('Pagada: ${reserva.pagada ? 'Sí' : 'No'}'),
               Text('Peluquero: ${reserva.peluquero}'),
-              Text('Servicios: ${reserva.servicios.join(', ')}'),
-              // Agrega más detalles de la reserva según sea necesario
+              Text('Cliente: ${reserva.usuario}'),
+              Text('Servicios: ${reserva.servicios.skip(1).join(', ')}'),
             ],
           ),
           actions: [

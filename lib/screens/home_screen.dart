@@ -1,4 +1,5 @@
 import 'package:fl_peluqueria/provider/user_role_provider.dart';
+import 'package:fl_peluqueria/screens/horario_peluqueros_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:fl_peluqueria/app_theme/app_theme.dart';
 import 'package:fl_peluqueria/screens/calendariosyhorarios_screen.dart';
@@ -26,7 +27,16 @@ class _HomeScreenState extends State<HomeScreen> {
     PeluquerosScreen(),
     CalendarioYHorarioScreen(),
     ReservasScreen(),
+    /*Consumer<UsuarioRoleProvider>(
+      builder: (context, userRoleProvider, child) {
+        return HorarioPeluquerosScreen(
+          userRole: userRoleProvider.user?.rol ?? 'defaultRole', // Recuperar el rol del usuario de UsuarioRoleProvider
+        );
+      },
+    ), */
   ];
+ 
+    
 
   @override
   Widget build(BuildContext context) {
@@ -63,6 +73,9 @@ class _HomeScreenState extends State<HomeScreen> {
             icon: Icon(Icons.event),
             label: 'Reservas',
           ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.event),
+            label: 'Horarios')
         ],
       ),
     );
@@ -130,6 +143,16 @@ class _HomeScreenState extends State<HomeScreen> {
       MaterialPageRoute(builder: (context) => CalendarioYHorarioScreen()),
     );
   }
+
+/* 
+void _goToCompruebaHorarioScreen(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => HorarioPeluquerosScreen()),
+    );
+  }
+*/
+ 
 
   void whatsapp() async {
     var contact = "+34695701397";

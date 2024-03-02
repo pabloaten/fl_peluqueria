@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:table_calendar/table_calendar.dart';
+import 'package:intl/intl.dart';
 import 'package:fl_peluqueria/models/reservas.dart';
 import 'package:fl_peluqueria/services/reservas_services.dart';
 
@@ -47,8 +48,8 @@ class _ReservasScreenState extends State<ReservasScreen> {
             ),
           ),
           TableCalendar(
-            firstDay: DateTime.utc(_focusedDay.year, _focusedDay.month, 1),
-            lastDay: DateTime.utc(_focusedDay.year, _focusedDay.month + 1, 0),
+            firstDay: DateTime.now().subtract(Duration(days: 365)),
+            lastDay: DateTime.now().add(Duration(days: 365)),
             focusedDay: _focusedDay,
             calendarFormat: _calendarFormat,
             onFormatChanged: (format) {
@@ -57,7 +58,9 @@ class _ReservasScreenState extends State<ReservasScreen> {
               });
             },
             onPageChanged: (focusedDay) {
-              _focusedDay = focusedDay;
+              setState(() {
+                _focusedDay = focusedDay;
+              });
             },
             selectedDayPredicate: (day) {
               return isSameDay(_selectedDay, day);
@@ -74,29 +77,25 @@ class _ReservasScreenState extends State<ReservasScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Citas para el día ${_selectedDay!.day}/${_selectedDay!.month}/${_selectedDay!.year}',
-                      style:
-                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                      'Citas para el día ${DateFormat('dd/MM/yyyy').format(_selectedDay!)}',
+                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                     ),
                     SizedBox(height: 10),
-                    // Llamada al método para construir la lista de citas filtrada por la fecha seleccionada
                     _buildFilteredCitasList(_selectedDay!),
                   ],
                 )
-              : SizedBox(),
+              : Container(),
           SizedBox(height: 20),
-          // Mostrar reservas al final de la pantalla
           Expanded(
             child: Consumer<ReservasServices>(
               builder: (context, reservasProvider, _) {
                 final List<Reservas> reservas = reservasProvider.reservas;
 
-                // Filtra las reservas por la fecha seleccionada
                 final List<Reservas> reservasEnFechaSeleccionada = reservas
-                
                     .where((reserva) =>
                         reserva.fecha != null &&
-                        isSameDay(DateTime.parse(reserva.fecha[0]) ,_selectedDay))
+                        isSameDay(
+                            DateTime.parse(reserva.fecha[0]), _selectedDay))
                     .toList();
 
                 return ListView.builder(
@@ -104,8 +103,14 @@ class _ReservasScreenState extends State<ReservasScreen> {
                   itemBuilder: (context, index) {
                     final reserva = reservasEnFechaSeleccionada[index];
                     return ListTile(
-                      title: Text('A'),
-                      subtitle: Text(reserva.fecha?.toString() ?? ''),
+                      title: Text(
+                          'Cita Fecha: ${DateFormat('dd/MM/yyyy HH:mm').format(DateTime.parse(reserva.fecha!.first))}'),
+                      trailing: ElevatedButton(
+                        onPressed: () {
+                          _showReservaDetails(context, reserva);
+                        },
+                        child: Text('Detalles'),
+                      ),
                     );
                   },
                 );
@@ -118,12 +123,41 @@ class _ReservasScreenState extends State<ReservasScreen> {
   }
 
   Widget _buildFilteredCitasList(DateTime day) {
-    // Aquí puedes definir cómo se construye la lista de citas filtradas
     if (_selectedDay != null) {
-      // Aquí puedes definir cómo se construye la lista de citas filtradas
-      return Container(); // Por ejemplo, puedes devolver un contenedor vacío si no necesitas mostrar citas filtradas
+      return Container();
     } else {
-      return SizedBox(); // Retorna un contenedor vacío si _selectedDay es nulo
+      return SizedBox();
     }
+  }
+
+  void _showReservaDetails(BuildContext context, Reservas reserva) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Detalles de la Reserva'),
+          content: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text('Fecha y Hora: ${DateFormat('dd/MM/yyyy HH:mm').format(DateTime.parse(reserva.fecha!.first))}'),
+              Text('Cancelada: ${reserva.cancelada ? 'Sí' : 'No'}'),
+              Text('Pagada: ${reserva.pagada ? 'Sí' : 'No'}'),
+              Text('Peluquero: ${reserva.peluquero}'),
+              Text('Cliente: ${reserva.usuario}'),
+              Text('Servicios: ${reserva.servicios.skip(1).join(', ')}'),
+            ],
+          ),
+          actions: [
+            ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('Cerrar'),
+            ),
+          ],
+        );
+      },
+    );
   }
 }

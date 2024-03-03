@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:fl_peluqueria/app_theme/app_theme.dart';
 import 'package:fl_peluqueria/screens/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -8,11 +9,11 @@ import 'package:fl_peluqueria/provider/user_role_provider.dart';
 
 class HorarioPeluquerosScreen extends StatefulWidget {
   @override
-  _HorarioPeluqueroScreenState createState() =>
-      _HorarioPeluqueroScreenState();
+  _HorarioPeluquerosScreenState createState() =>
+      _HorarioPeluquerosScreenState();
 }
 
-class _HorarioPeluqueroScreenState extends State<HorarioPeluquerosScreen> {
+class _HorarioPeluquerosScreenState extends State<HorarioPeluquerosScreen> {
   late TimeOfDay morningOpeningTime;
   late TimeOfDay morningClosingTime;
   late TimeOfDay tardeOpeningTime;
@@ -32,7 +33,8 @@ class _HorarioPeluqueroScreenState extends State<HorarioPeluquerosScreen> {
   void initState() {
     super.initState();
     _focusedDay = _selectedDay;
-    obtenerHorarioDesdeBD('hor001'); // Suponiendo que el horario del peluquero se guarda con el ID 'hor001'
+    obtenerHorarioDesdeBD(
+        'hor001'); // Suponiendo que el horario del peluquero se guarda con el ID 'hor001'
   }
 
   bool _isFirstTime = true;
@@ -103,9 +105,6 @@ class _HorarioPeluqueroScreenState extends State<HorarioPeluquerosScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Horario Peluquero'),
-      ),
       body: isLoading
           ? Center(child: CircularProgressIndicator())
           : Column(
@@ -129,9 +128,22 @@ class _HorarioPeluqueroScreenState extends State<HorarioPeluquerosScreen> {
                   onDaySelected: (selectedDay, focusedDay) {
                     setState(() {
                       _selectedDay = selectedDay;
-                      _isDaySelected = true; // Actualiza el estado cuando se selecciona un día
+                      _isDaySelected =
+                          true; // Actualiza el estado cuando se selecciona un día
                     });
                   },
+                  calendarStyle: CalendarStyle(
+                    selectedDecoration: BoxDecoration(
+                      color: AppTheme
+                          .primary, // Aquí puedes usar tu color primario
+                      shape: BoxShape.circle,
+                    ),
+                    todayDecoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Color.fromARGB(
+                          134, 105, 99, 99), // Color del día de hoy
+                    ),
+                  ),
                 ),
                 Divider(), // Divider
                 if (_isDaySelected &&
@@ -141,8 +153,7 @@ class _HorarioPeluqueroScreenState extends State<HorarioPeluquerosScreen> {
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: GridView.builder(
-                        gridDelegate:
-                            SliverGridDelegateWithFixedCrossAxisCount(
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisCount: 4,
                           mainAxisSpacing: 10.0,
                           crossAxisSpacing: 10.0,
@@ -155,6 +166,9 @@ class _HorarioPeluqueroScreenState extends State<HorarioPeluquerosScreen> {
                           final time = calculateTimeSlots(
                               morningOpeningTime, morningClosingTime)[index];
                           return ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              primary: AppTheme.primary, // Color de fondo negro
+                            ),
                             onPressed: () {
                               // Handle button press
                             },
@@ -172,8 +186,7 @@ class _HorarioPeluqueroScreenState extends State<HorarioPeluquerosScreen> {
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: GridView.builder(
-                        gridDelegate:
-                            SliverGridDelegateWithFixedCrossAxisCount(
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisCount: 4,
                           mainAxisSpacing: 10.0,
                           crossAxisSpacing: 10.0,
@@ -186,6 +199,9 @@ class _HorarioPeluqueroScreenState extends State<HorarioPeluquerosScreen> {
                           final time = calculateTimeSlots(
                               tardeOpeningTime, tardeClosingTime)[index];
                           return ElevatedButton(
+                             style: ElevatedButton.styleFrom(
+                              primary: AppTheme.primary, // Color de fondo negro
+                            ),
                             onPressed: () {
                               // Handle button press
                             },

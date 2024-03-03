@@ -9,9 +9,9 @@ class PeluquerosScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
+     /*  appBar: AppBar(
         title: Text('Lista de Usuarios'),
-      ),
+      ), */
       body: Consumer<UsuariosServices>(
         builder: (context, usuariosServices, _) {
           if (usuariosServices.isLoading) {

@@ -39,7 +39,7 @@ class _ReservasScreenState extends State<ReservasScreen> {
               },
               decoration: InputDecoration(
                 labelText: 'Buscar',
-                hintText: 'Buscar por nombre de peluquero o datos del cliente',
+                hintText: 'Buscar por nombre de peluquero, cliente o servicio',
                 prefixIcon: Icon(Icons.search),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8.0),
@@ -91,20 +91,29 @@ class _ReservasScreenState extends State<ReservasScreen> {
               builder: (context, reservasProvider, _) {
                 final List<Reservas> reservas = reservasProvider.reservas;
 
-                final List<Reservas> reservasEnFechaSeleccionada = reservas
-                    .where((reserva) =>
+                // Filtrar las citas por nombre del peluquero, cliente o servicio
+                final List<Reservas> reservasFiltered = _searchText.isEmpty
+                    ? reservas.where((reserva) =>
                         reserva.fecha != null &&
-                        isSameDay(
-                            DateTime.parse(reserva.fecha[0]), _selectedDay))
-                    .toList();
+                        isSameDay(DateTime.parse(reserva.fecha[0]), _selectedDay))
+                        .toList()
+                    : reservas.where((reserva) {
+                        final peluquero = reserva.peluquero.toString().toLowerCase();
+                        final cliente = reserva.usuario.toString().toLowerCase();
+                        final servicios = reserva.servicios.join(',').toLowerCase();
+                        return peluquero.contains(_searchText.toLowerCase()) ||
+                            cliente.contains(_searchText.toLowerCase()) ||
+                            servicios.contains(_searchText.toLowerCase());
+                      }).toList();
 
                 return ListView.builder(
-                  itemCount: reservasEnFechaSeleccionada.length,
+                  itemCount: reservasFiltered.length,
                   itemBuilder: (context, index) {
-                    final reserva = reservasEnFechaSeleccionada[index];
+                    final reserva = reservasFiltered[index];
                     return ListTile(
                       title: Text(
-                          'Cita Fecha: ${DateFormat('dd/MM/yyyy HH:mm').format(DateTime.parse(reserva.fecha!.first))}'),
+                        'Cita Fecha: ${DateFormat('dd/MM/yyyy HH:mm').format(DateTime.parse(reserva.fecha!.first))}',
+                      ),
                       trailing: ElevatedButton(
                         onPressed: () {
                           _showReservaDetails(context, reserva);

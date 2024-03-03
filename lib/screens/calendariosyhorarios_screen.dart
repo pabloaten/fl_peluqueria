@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'package:fl_peluqueria/screens/home_screen.dart';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fl_peluqueria/models/usuario.dart';
 import 'package:fl_peluqueria/provider/user_role_provider.dart';
@@ -23,6 +23,7 @@ class _CalendarioYHorarioScreenState extends State<CalendarioYHorarioScreen> {
   late UsuarioRoleProvider userRoleProvider;
   final String databaseURL =
       'https://fl-productos2023-2024-default-rtdb.europe-west1.firebasedatabase.app/';
+      
   /*  
 
    Future<void> insertData(Map<String, dynamic> data) async {
@@ -66,31 +67,32 @@ class _CalendarioYHorarioScreenState extends State<CalendarioYHorarioScreen> {
   @override
   void initState() {
     super.initState();
-  }
+    userRoleProvider = Provider.of<UsuarioRoleProvider>(context, listen: false);
 
-  bool _isFirstTime = true;
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    if (_isFirstTime) {
-      userRoleProvider = Provider.of<UsuarioRoleProvider>(context);
-
-      String? rol = userRoleProvider.user?.rol;
-      if (rol != 'gerente') {
-        // Muestra un mensaje de error y redirige al usuario después de que el proceso de construcción se haya completado
-        WidgetsBinding.instance!.addPostFrameCallback((_) {
-          ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Necesario rol "gerente".')));
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => HomeScreen()),
-          );
-        });
-      }
-      _isFirstTime = false;
+    String? rol = userRoleProvider.user?.rol;
+    if (rol != 'gerente') {
+      // Muestra un mensaje de error
+     /*  ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Necesario rol "gerente".'))); */
+      // Redirige al usuario homeScreen
+      Navigator.pushNamed(context, '/');
     }
   }
+
+  // Recuperar el rol del usuario de Firestore
+  /* Future<String?> getUserRole() async {
+    User? user = FirebaseAuth.instance.currentUser;
+    print(user?.uid);
+    if (user != null) {
+       DocumentSnapshot doc = await FirebaseFirestore.instance
+                    .collection('usuarios')
+                    .doc(user.uid)
+                    .get();
+            Usuario usuario = Usuario.fromMap(doc.data() as Map<String, dynamic>);
+            return usuario.rol;
+    }
+    return null;
+  } */
 
   //fechas seleccionadas en el calendario
   var _diaInicio;
@@ -170,10 +172,8 @@ class _CalendarioYHorarioScreenState extends State<CalendarioYHorarioScreen> {
       }
     }
 
+    var _horaSeleccionada;
     return Scaffold(
-        appBar: AppBar(
-          title: Text('Calendario y horarios'),
-        ),
         body: Column(
           children: <Widget>[
             Container(
@@ -195,7 +195,7 @@ class _CalendarioYHorarioScreenState extends State<CalendarioYHorarioScreen> {
             ),
             Container(
               padding: const EdgeInsets.all(12.0),
-              height: 322.0,
+              height: 350.0,
               color: Colors.grey.shade300,
               child: SfDateRangePicker(
                 key: ValueKey(_switchValue),
@@ -239,7 +239,7 @@ class _CalendarioYHorarioScreenState extends State<CalendarioYHorarioScreen> {
               ],
             ),
             Row(
-              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 ElevatedButton(
                   onPressed: () =>
@@ -252,7 +252,7 @@ class _CalendarioYHorarioScreenState extends State<CalendarioYHorarioScreen> {
               ],
             ),
             Row(
-              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 ElevatedButton(
                   onPressed: () =>
@@ -265,7 +265,7 @@ class _CalendarioYHorarioScreenState extends State<CalendarioYHorarioScreen> {
               ],
             ),
             Row(
-              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 ElevatedButton(
                   onPressed: () =>
@@ -278,7 +278,7 @@ class _CalendarioYHorarioScreenState extends State<CalendarioYHorarioScreen> {
               ],
             ),
             Row(
-              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 ElevatedButton(
                   onPressed: () =>

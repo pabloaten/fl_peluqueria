@@ -1,27 +1,64 @@
 import 'dart:convert';
-
+import 'package:fl_peluqueria/app_theme/app_theme.dart';
+import 'package:fl_peluqueria/screens/home_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:table_calendar/table_calendar.dart';
 import 'package:http/http.dart' as http;
+import 'package:fl_peluqueria/provider/user_role_provider.dart';
 
 class HorarioPeluquerosScreen extends StatefulWidget {
   @override
-  _HorarioPeluqueroScreenState createState() => _HorarioPeluqueroScreenState();
+  _HorarioPeluquerosScreenState createState() =>
+      _HorarioPeluquerosScreenState();
 }
 
-class _HorarioPeluqueroScreenState extends State<HorarioPeluquerosScreen> {
-  late TimeOfDay morningOpeningTime; // Hora de apertura de la peluquería
-  late TimeOfDay morningClosingTime; // Hora de cierre de la peluquería
-  late TimeOfDay tardeOpeningTime; // Hora de apertura de la tarde
-  late TimeOfDay tardeClosingTime; // Hora de cierre de la tarde
+class _HorarioPeluquerosScreenState extends State<HorarioPeluquerosScreen> {
+  late TimeOfDay morningOpeningTime;
+  late TimeOfDay morningClosingTime;
+  late TimeOfDay tardeOpeningTime;
+  late TimeOfDay tardeClosingTime;
+  late UsuarioRoleProvider userRoleProvider;
+  bool _isButtonSelected = false;
 
   final String databaseURL =
       'https://fl-productos2023-2024-default-rtdb.europe-west1.firebasedatabase.app/';
   bool isLoading = true;
+  CalendarFormat _calendarFormat = CalendarFormat.month;
+  DateTime _selectedDay = DateTime.now();
+  DateTime? _focusedDay;
+  bool _isDaySelected = false;
 
   @override
   void initState() {
     super.initState();
-    obtenerHorarioDesdeBD('hor001');
+    _focusedDay = _selectedDay;
+    obtenerHorarioDesdeBD(
+        'hor001'); // Suponiendo que el horario del peluquero se guarda con el ID 'hor001'
+  }
+
+  bool _isFirstTime = true;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (_isFirstTime) {
+      userRoleProvider = Provider.of<UsuarioRoleProvider>(context);
+
+      String? rol = userRoleProvider.user?.rol;
+      if (rol != 'peluquero') {
+        // Muestra un mensaje de error y redirige al usuario después de que el proceso de construcción se haya completado
+        WidgetsBinding.instance!.addPostFrameCallback((_) {
+          ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Necesario rol "peluquero".')));
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => HomeScreen()),
+          );
+        });
+      }
+      _isFirstTime = false;
+    }
   }
 
   Future<void> obtenerHorarioDesdeBD(String horarioId) async {
@@ -68,66 +105,112 @@ class _HorarioPeluqueroScreenState extends State<HorarioPeluquerosScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Horario Peluquero'),
-      ),
       body: isLoading
           ? Center(child: CircularProgressIndicator())
           : Column(
               children: [
-                Expanded(
-                  child: Container(
-                    padding: EdgeInsets.all(20.0),
-                    child: GridView.builder(
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 4,
-                        mainAxisSpacing: 10.0,
-                        crossAxisSpacing: 10.0,
-                        childAspectRatio: 2.0,
-                      ),
-                      itemCount: calculateTimeSlots(
-                              morningOpeningTime, morningClosingTime)
-                          .length,
-                      itemBuilder: (context, index) {
-                        final time = calculateTimeSlots(
-                            morningOpeningTime, morningClosingTime)[index];
-                        return ElevatedButton(
-                          onPressed: () {
-                            // Lógica para manejar el botón presionado
-                          },
-                          child: Text('${time.hour}:${time.minute}'),
-                        );
-                      },
+                TableCalendar(
+                  firstDay: DateTime.utc(2020, 1, 1),
+                  lastDay: DateTime.utc(2030, 12, 31),
+                  focusedDay: _focusedDay!,
+                  calendarFormat: _calendarFormat,
+                  selectedDayPredicate: (day) {
+                    return day.weekday != DateTime.sunday;
+                  },
+                  onFormatChanged: (format) {
+                    setState(() {
+                      _calendarFormat = format;
+                    });
+                  },
+                  onPageChanged: (focusedDay) {
+                    _focusedDay = focusedDay;
+                  },
+                  onDaySelected: (selectedDay, focusedDay) {
+                    setState(() {
+                      _selectedDay = selectedDay;
+                      _isDaySelected =
+                          true; // Actualiza el estado cuando se selecciona un día
+                    });
+                  },
+                  calendarStyle: CalendarStyle(
+                    selectedDecoration: BoxDecoration(
+                      color: AppTheme
+                          .primary, // Aquí puedes usar tu color primario
+                      shape: BoxShape.circle,
+                    ),
+                    todayDecoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Color.fromARGB(
+                          134, 105, 99, 99), // Color del día de hoy
                     ),
                   ),
                 ),
-                Divider(), // Línea divisoria
-                Expanded(
-                  child: Container(
-                    padding: EdgeInsets.all(20.0),
-                    child: GridView.builder(
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 4,
-                        mainAxisSpacing: 10.0,
-                        crossAxisSpacing: 10.0,
-                        childAspectRatio: 2.0,
+                Divider(), // Divider
+                if (_isDaySelected &&
+                    morningOpeningTime != null &&
+                    morningClosingTime != null)
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: GridView.builder(
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 4,
+                          mainAxisSpacing: 10.0,
+                          crossAxisSpacing: 10.0,
+                          childAspectRatio: 2.0,
+                        ),
+                        itemCount: calculateTimeSlots(
+                                morningOpeningTime, morningClosingTime)
+                            .length,
+                        itemBuilder: (context, index) {
+                          final time = calculateTimeSlots(
+                              morningOpeningTime, morningClosingTime)[index];
+                          return ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              primary: AppTheme.primary, // Color de fondo negro
+                            ),
+                            onPressed: () {
+                              // Handle button press
+                            },
+                            child: Text('${time.hour}:${time.minute}'),
+                          );
+                        },
                       ),
-                      itemCount:
-                          calculateTimeSlots(tardeOpeningTime, tardeClosingTime)
-                              .length,
-                      itemBuilder: (context, index) {
-                        final time = calculateTimeSlots(
-                            tardeOpeningTime, tardeClosingTime)[index];
-                        return ElevatedButton(
-                          onPressed: () {
-                            // Lógica para manejar el botón presionado
-                          },
-                          child: Text('${time.hour}:${time.minute}'),
-                        );
-                      },
                     ),
                   ),
-                ),
+                Divider(), // Divider
+                if (_isDaySelected &&
+                    tardeOpeningTime != null &&
+                    tardeClosingTime != null)
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: GridView.builder(
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 4,
+                          mainAxisSpacing: 10.0,
+                          crossAxisSpacing: 10.0,
+                          childAspectRatio: 2.0,
+                        ),
+                        itemCount: calculateTimeSlots(
+                                tardeOpeningTime, tardeClosingTime)
+                            .length,
+                        itemBuilder: (context, index) {
+                          final time = calculateTimeSlots(
+                              tardeOpeningTime, tardeClosingTime)[index];
+                          return ElevatedButton(
+                             style: ElevatedButton.styleFrom(
+                              primary: AppTheme.primary, // Color de fondo negro
+                            ),
+                            onPressed: () {
+                              // Handle button press
+                            },
+                            child: Text('${time.hour}:${time.minute}'),
+                          );
+                        },
+                      ),
+                    ),
+                  ),
               ],
             ),
     );
@@ -143,13 +226,13 @@ class _HorarioPeluqueroScreenState extends State<HorarioPeluquerosScreen> {
             currentTime.minute <= closingTime.minute)) {
       slots.add(currentTime);
 
-      // Incrementa en 30 minutos
+      // Increment by 30 minutes
       currentTime = TimeOfDay(
         hour: currentTime.hour,
         minute: currentTime.minute + 30,
       );
 
-      // Ajusta la hora si se excede de 60 minutos
+      // Adjust the hour if exceeds 60 minutes
       if (currentTime.minute >= 60) {
         currentTime = TimeOfDay(
           hour: currentTime.hour + 1,
@@ -157,7 +240,6 @@ class _HorarioPeluqueroScreenState extends State<HorarioPeluquerosScreen> {
         );
       }
     }
-
     return slots;
   }
 }

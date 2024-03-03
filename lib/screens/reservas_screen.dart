@@ -1,3 +1,4 @@
+import 'package:fl_peluqueria/app_theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:table_calendar/table_calendar.dart';
@@ -23,9 +24,9 @@ class _ReservasScreenState extends State<ReservasScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
+      /*  appBar: AppBar(
         title: Text('Reservas'),
-      ),
+      ), */
       body: Column(
         children: [
           Padding(
@@ -52,6 +53,20 @@ class _ReservasScreenState extends State<ReservasScreen> {
             lastDay: DateTime.now().add(Duration(days: 365)),
             focusedDay: _focusedDay,
             calendarFormat: _calendarFormat,
+            calendarStyle: CalendarStyle(
+              selectedDecoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color:
+                    AppTheme.primary, // Aquí puedes definir el color que desees
+              ),
+              todayDecoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: Color.fromARGB(134, 105, 99, 99), // Color del día de hoy
+              ),
+              selectedTextStyle: TextStyle(
+                  color: Colors
+                      .white), // Color del texto dentro del día seleccionado
+            ),
             onFormatChanged: (format) {
               setState(() {
                 _calendarFormat = format;
@@ -78,7 +93,8 @@ class _ReservasScreenState extends State<ReservasScreen> {
                   children: [
                     Text(
                       'Citas para el día ${DateFormat('dd/MM/yyyy').format(_selectedDay!)}',
-                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                      style:
+                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                     ),
                     SizedBox(height: 10),
                     _buildFilteredCitasList(_selectedDay!),
@@ -93,14 +109,19 @@ class _ReservasScreenState extends State<ReservasScreen> {
 
                 // Filtrar las citas por nombre del peluquero, cliente o servicio
                 final List<Reservas> reservasFiltered = _searchText.isEmpty
-                    ? reservas.where((reserva) =>
-                        reserva.fecha != null &&
-                        isSameDay(DateTime.parse(reserva.fecha[0]), _selectedDay))
+                    ? reservas
+                        .where((reserva) =>
+                            reserva.fecha != null &&
+                            isSameDay(
+                                DateTime.parse(reserva.fecha[0]), _selectedDay))
                         .toList()
                     : reservas.where((reserva) {
-                        final peluquero = reserva.peluquero.toString().toLowerCase();
-                        final cliente = reserva.usuario.toString().toLowerCase();
-                        final servicios = reserva.servicios.join(',').toLowerCase();
+                        final peluquero =
+                            reserva.peluquero.toString().toLowerCase();
+                        final cliente =
+                            reserva.usuario.toString().toLowerCase();
+                        final servicios =
+                            reserva.servicios.join(',').toLowerCase();
                         return peluquero.contains(_searchText.toLowerCase()) ||
                             cliente.contains(_searchText.toLowerCase()) ||
                             servicios.contains(_searchText.toLowerCase());
@@ -149,7 +170,8 @@ class _ReservasScreenState extends State<ReservasScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text('Fecha y Hora: ${DateFormat('dd/MM/yyyy HH:mm').format(DateTime.parse(reserva.fecha!.first))}'),
+              Text(
+                  'Fecha y Hora: ${DateFormat('dd/MM/yyyy HH:mm').format(DateTime.parse(reserva.fecha!.first))}'),
               Text('Cancelada: ${reserva.cancelada ? 'Sí' : 'No'}'),
               Text('Pagada: ${reserva.pagada ? 'Sí' : 'No'}'),
               Text('Peluquero: ${reserva.peluquero}'),

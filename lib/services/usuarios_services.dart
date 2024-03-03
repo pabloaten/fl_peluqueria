@@ -82,8 +82,8 @@ class UsuariosServices extends ChangeNotifier {
     }
   }
 
-  Future<String?> updateUsuario(Usuario usuario) async {
-  final url = Uri.https(_baseURL, 'usuarios/${usuario.email}.json');
+  Future<String?> updateUsuario(Usuario usuario, String email) async {
+  final url = Uri.https(_baseURL, 'usuarios/$email.json');
   
   try {
     final resp = await http.put(url, body: usuario.toRawJson());

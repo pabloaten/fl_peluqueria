@@ -58,7 +58,7 @@ class _EditarUsuarioScreenState extends State<EditarUsuarioScreen> {
                 widget.usuario.rol = _rolController.text;
                 
                 // Llamar al método para actualizar el usuario
-                final String? result = await widget.usuariosServices.updateUsuario(widget.usuario);
+                final String? result = await widget.usuariosServices.updateUsuario(widget.usuario, widget.usuario.email);
                 
                 if (result != null) {
                   print('Usuario actualizado exitosamente');

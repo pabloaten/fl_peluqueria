@@ -167,7 +167,8 @@ class _HorarioPeluquerosScreenState extends State<HorarioPeluquerosScreen> {
                               morningOpeningTime, morningClosingTime)[index];
                           return ElevatedButton(
                             style: ElevatedButton.styleFrom(
-                              primary: AppTheme.primary, // Color de fondo negro
+                              backgroundColor:
+                                  AppTheme.primary, // Color de fondo negro
                             ),
                             onPressed: () {
                               // Handle button press
@@ -199,8 +200,9 @@ class _HorarioPeluquerosScreenState extends State<HorarioPeluquerosScreen> {
                           final time = calculateTimeSlots(
                               tardeOpeningTime, tardeClosingTime)[index];
                           return ElevatedButton(
-                             style: ElevatedButton.styleFrom(
-                              primary: AppTheme.primary, // Color de fondo negro
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor:
+                                  AppTheme.primary, // Color de fondo negro
                             ),
                             onPressed: () {
                               // Handle button press

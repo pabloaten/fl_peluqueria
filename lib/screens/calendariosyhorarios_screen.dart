@@ -23,7 +23,7 @@ class _CalendarioYHorarioScreenState extends State<CalendarioYHorarioScreen> {
   late UsuarioRoleProvider userRoleProvider;
   final String databaseURL =
       'https://fl-productos2023-2024-default-rtdb.europe-west1.firebasedatabase.app/';
-      
+
   /*  
    Future<void> insertData(Map<String, dynamic> data) async {
     final Uri url = Uri.parse('$databaseURL/horarios.json');
@@ -172,125 +172,128 @@ class _CalendarioYHorarioScreenState extends State<CalendarioYHorarioScreen> {
 
     return Scaffold(
         appBar: AppBar(
-          title: Text('Calendario y horarios'),
+          title: const Text('Calendario y horarios'),
         ),
-        body: Column(
-          children: <Widget>[
-            Container(
-              color: Colors.grey.shade300,
-              child: Row(
+        body: SingleChildScrollView(
+          child: Column(
+            children: <Widget>[
+              Container(
+                color: Colors.grey.shade300,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: <Widget>[
+                    Text('Activar/Desactivar Sabados'),
+                    Switch(
+                      value: _switchValue,
+                      onChanged: (value) {
+                        setState(() {
+                          _switchValue = value;
+                        });
+                      },
+                    ),
+                  ],
+                ),
+              ),
+              Container(
+                padding: const EdgeInsets.all(12.0),
+                height: 322.0,
+                color: Colors.grey.shade300,
+                child: SfDateRangePicker(
+                  key: ValueKey(_switchValue),
+                  monthViewSettings:
+                      const DateRangePickerMonthViewSettings(firstDayOfWeek: 1),
+                  cellBuilder: cellBuilder,
+                  selectionColor: Colors.amber,
+                  startRangeSelectionColor: Colors.grey,
+                  endRangeSelectionColor: Colors.grey,
+                  rangeSelectionColor: Colors.grey.shade100,
+                  selectionMode: DateRangePickerSelectionMode.range,
+                  //blackoutDates: blackoutDates,
+                  onSelectionChanged:
+                      (DateRangePickerSelectionChangedArgs args) {
+                    setState(() {
+                      PickerDateRange range = args.value;
+                      _diaInicio = range.startDate.toString();
+                      diaInicioFormat = _diaInicio.substring(0, 10);
+                      _diaFin = range.endDate.toString();
+                      diaFinFormat = _diaFin.substring(0, 10);
+                      //_selectedRange = PickerDateRange(startDate, endDate);
+                    });
+                  },
+                ),
+              ),
+              Row(
                 mainAxisAlignment: MainAxisAlignment.end,
-                children: <Widget>[
-                  Text('Activar/Desactivar Sabados'),
-                  Switch(
-                    value: _switchValue,
-                    onChanged: (value) {
-                      setState(() {
-                        _switchValue = value;
-                      });
-                    },
+                children: [
+                  Text(
+                    'Fecha de inicio: ${diaInicioFormat ?? 'No seleccionada'}',
+                    style: TextStyle(fontSize: 16, color: Colors.black),
                   ),
                 ],
               ),
-            ),
-            Container(
-              padding: const EdgeInsets.all(12.0),
-              height: 322.0,
-              color: Colors.grey.shade300,
-              child: SfDateRangePicker(
-                key: ValueKey(_switchValue),
-                monthViewSettings:
-                    const DateRangePickerMonthViewSettings(firstDayOfWeek: 1),
-                cellBuilder: cellBuilder,
-                selectionColor: Colors.amber,
-                startRangeSelectionColor: Colors.grey,
-                endRangeSelectionColor: Colors.grey,
-                rangeSelectionColor: Colors.grey.shade100,
-                selectionMode: DateRangePickerSelectionMode.range,
-                //blackoutDates: blackoutDates,
-                onSelectionChanged: (DateRangePickerSelectionChangedArgs args) {
-                  setState(() {
-                    PickerDateRange range = args.value;
-                    _diaInicio = range.startDate.toString();
-                    diaInicioFormat = _diaInicio.substring(0, 10);
-                    _diaFin = range.endDate.toString();
-                    diaFinFormat = _diaFin.substring(0, 10);
-                    //_selectedRange = PickerDateRange(startDate, endDate);
-                  });
-                },
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Text(
+                    'Fecha de fin: ${diaFinFormat ?? 'No seleccionada'}',
+                    style: TextStyle(fontSize: 16, color: Colors.black),
+                  ),
+                ],
               ),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                Text(
-                  'Fecha de inicio: ${diaInicioFormat ?? 'No seleccionada'}',
-                  style: TextStyle(fontSize: 16, color: Colors.black),
-                ),
-              ],
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                Text(
-                  'Fecha de fin: ${diaFinFormat ?? 'No seleccionada'}',
-                  style: TextStyle(fontSize: 16, color: Colors.black),
-                ),
-              ],
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                ElevatedButton(
-                  onPressed: () =>
-                      callTimePicker((time) => horaAperturaManana = time),
-                  child: Text('Apertura mañanas'),
-                ),
-                Text(
-                  '${horaAperturaManana?.format(context) ?? 'No seleccionada'}',
-                ),
-              ],
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                ElevatedButton(
-                  onPressed: () =>
-                      callTimePicker((time) => horaCierreManana = time),
-                  child: Text('Cierre mañanas'),
-                ),
-                Text(
-                  '${horaCierreManana?.format(context) ?? 'No seleccionada'}',
-                ),
-              ],
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                ElevatedButton(
-                  onPressed: () =>
-                      callTimePicker((time) => horaAperturaTarde = time),
-                  child: Text('Apertura tardes'),
-                ),
-                Text(
-                  '${horaAperturaTarde?.format(context) ?? 'No seleccionada'}',
-                ),
-              ],
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                ElevatedButton(
-                  onPressed: () =>
-                      callTimePicker((time) => horaCierreTarde = time),
-                  child: Text('Cierre tardes'),
-                ),
-                Text(
-                  '${horaCierreTarde?.format(context) ?? 'No seleccionada'}',
-                ),
-              ],
-            ),
-          ],
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  ElevatedButton(
+                    onPressed: () =>
+                        callTimePicker((time) => horaAperturaManana = time),
+                    child: Text('Apertura mañanas'),
+                  ),
+                  Text(
+                    '${horaAperturaManana?.format(context) ?? 'No seleccionada'}',
+                  ),
+                ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  ElevatedButton(
+                    onPressed: () =>
+                        callTimePicker((time) => horaCierreManana = time),
+                    child: Text('Cierre mañanas'),
+                  ),
+                  Text(
+                    '${horaCierreManana?.format(context) ?? 'No seleccionada'}',
+                  ),
+                ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  ElevatedButton(
+                    onPressed: () =>
+                        callTimePicker((time) => horaAperturaTarde = time),
+                    child: Text('Apertura tardes'),
+                  ),
+                  Text(
+                    '${horaAperturaTarde?.format(context) ?? 'No seleccionada'}',
+                  ),
+                ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  ElevatedButton(
+                    onPressed: () =>
+                        callTimePicker((time) => horaCierreTarde = time),
+                    child: Text('Cierre tardes'),
+                  ),
+                  Text(
+                    '${horaCierreTarde?.format(context) ?? 'No seleccionada'}',
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
         floatingActionButton: FloatingActionButton(
           onPressed: () async {

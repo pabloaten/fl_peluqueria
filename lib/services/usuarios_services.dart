@@ -42,7 +42,28 @@ class UsuariosServices extends ChangeNotifier {
     return usuarios;
     //print(this.producto[1].nombre);
   }
-
+  Future<String?> updateUsuario(Usuario usuario, String email) async {
+  final url = Uri.https(_baseURL, 'usuarios/$email.json');
+  
+  try {
+    final resp = await http.put(url, body: usuario.toRawJson());
+    
+    if (resp.statusCode == 200) {
+      // Notificar a los escuchadores que se ha actualizado el usuario correctamente
+      notifyListeners();
+      
+      return usuario.email;
+    } else {
+      // Manejar el caso en el que la solicitud no se completó con éxito
+      print('Error al actualizar el usuario: ${resp.statusCode}');
+      return null;
+    }
+  } catch (error) {
+    // Manejar el caso en el que ocurrió un error durante la solicitud
+    print('Error al actualizar el usuario: $error');
+    return null;
+  }
+}
  Future<Usuario?> buscarUsuarioPorEmail(String email) async {
     try {
       // Realiza la búsqueda local en la lista de usuarios

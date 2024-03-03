@@ -14,19 +14,18 @@ class EditarUsuarioScreen extends StatefulWidget {
 
 class _EditarUsuarioScreenState extends State<EditarUsuarioScreen> {
   late TextEditingController _nombreController;
-  late TextEditingController _rolController;
+  String _selectedRol = ''; 
 
   @override
   void initState() {
     super.initState();
     _nombreController = TextEditingController(text: widget.usuario.nombreApellidos);
-    _rolController = TextEditingController(text: widget.usuario.rol);
+    _selectedRol = widget.usuario.rol; 
   }
 
   @override
   void dispose() {
     _nombreController.dispose();
-    _rolController.dispose();
     super.dispose();
   }
 
@@ -46,8 +45,18 @@ class _EditarUsuarioScreenState extends State<EditarUsuarioScreen> {
               decoration: InputDecoration(labelText: 'Nombre y Apellidos'),
             ),
             SizedBox(height: 20.0),
-            TextField(
-              controller: _rolController,
+            DropdownButtonFormField<String>(
+              value: _selectedRol,
+              items: [
+                DropdownMenuItem(child: Text('Gerente'), value: 'gerente'),
+                DropdownMenuItem(child: Text('Peluquero'), value: 'peluquero'),
+                DropdownMenuItem(child: Text('Cliente'), value: 'cliente'),
+              ],
+              onChanged: (value) {
+                setState(() {
+                  _selectedRol = value ?? '';
+                });
+              },
               decoration: InputDecoration(labelText: 'Rol'),
             ),
             SizedBox(height: 20.0),
@@ -55,7 +64,7 @@ class _EditarUsuarioScreenState extends State<EditarUsuarioScreen> {
               onPressed: () async {
                 // Actualizar los datos del usuario con los valores de los campos de texto
                 widget.usuario.nombreApellidos = _nombreController.text;
-                widget.usuario.rol = _rolController.text;
+                widget.usuario.rol = _selectedRol;
                 
                 // Llamar al método para actualizar el usuario
                 final String? result = await widget.usuariosServices.updateUsuario(widget.usuario, widget.usuario.email);
@@ -77,3 +86,4 @@ class _EditarUsuarioScreenState extends State<EditarUsuarioScreen> {
     );
   }
 }
+

@@ -27,13 +27,7 @@ class _HomeScreenState extends State<HomeScreen> {
     PeluquerosScreen(),
     CalendarioYHorarioScreen(),
     ReservasScreen(),
-    /*Consumer<UsuarioRoleProvider>(
-      builder: (context, userRoleProvider, child) {
-        return HorarioPeluquerosScreen(
-          userRole: userRoleProvider.user?.rol ?? 'defaultRole', // Recuperar el rol del usuario de UsuarioRoleProvider
-        );
-      },
-    ), */
+    HorarioPeluquerosScreen()
   ];
  
     
@@ -74,7 +68,7 @@ class _HomeScreenState extends State<HomeScreen> {
             label: 'Reservas',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.event),
+            icon: Icon(Icons.calendar_month),
             label: 'Horarios')
         ],
       ),
@@ -123,12 +117,12 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-/*   void _goToPeluquerosScreen(BuildContext context) {
+  void _goToPeluquerosScreen(BuildContext context) {
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => PeluquerosScreen()),
     );
-  } */
+  } 
 
   void _goToReservasScreen(BuildContext context) {
     Navigator.push(
@@ -144,14 +138,14 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-/* 
+
 void _goToCompruebaHorarioScreen(BuildContext context) {
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => HorarioPeluquerosScreen()),
     );
   }
-*/
+
  
 
   void whatsapp() async {

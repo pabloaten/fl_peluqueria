@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:fl_peluqueria/app_theme/app_theme.dart';
 import 'package:fl_peluqueria/models/usuario.dart';
 import 'package:fl_peluqueria/provider/user_role_provider.dart';
 import 'package:flutter/material.dart';
@@ -24,7 +23,7 @@ class _CalendarioYHorarioScreenState extends State<CalendarioYHorarioScreen> {
   late UsuarioRoleProvider userRoleProvider;
   final String databaseURL =
       'https://fl-productos2023-2024-default-rtdb.europe-west1.firebasedatabase.app/';
-
+      
   /*  
 
    Future<void> insertData(Map<String, dynamic> data) async {
@@ -73,7 +72,7 @@ class _CalendarioYHorarioScreenState extends State<CalendarioYHorarioScreen> {
     String? rol = userRoleProvider.user?.rol;
     if (rol != 'gerente') {
       // Muestra un mensaje de error
-      /*  ScaffoldMessenger.of(context).showSnackBar(
+     /*  ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Necesario rol "gerente".'))); */
       // Redirige al usuario homeScreen
       Navigator.pushNamed(context, '/');
@@ -246,9 +245,6 @@ class _CalendarioYHorarioScreenState extends State<CalendarioYHorarioScreen> {
                   onPressed: () =>
                       callTimePicker((time) => horaAperturaManana = time),
                   child: Text('Apertura mañanas'),
-                  style: ElevatedButton.styleFrom(
-                    primary: AppTheme.primary,
-                  ),
                 ),
                 Text(
                   '${horaAperturaManana?.format(context) ?? 'No seleccionada'}',
@@ -262,9 +258,6 @@ class _CalendarioYHorarioScreenState extends State<CalendarioYHorarioScreen> {
                   onPressed: () =>
                       callTimePicker((time) => horaCierreManana = time),
                   child: Text('Cierre mañanas'),
-                   style: ElevatedButton.styleFrom(
-                    primary: AppTheme.primary,
-                  ),
                 ),
                 Text(
                   '${horaCierreManana?.format(context) ?? 'No seleccionada'}',
@@ -278,9 +271,6 @@ class _CalendarioYHorarioScreenState extends State<CalendarioYHorarioScreen> {
                   onPressed: () =>
                       callTimePicker((time) => horaAperturaTarde = time),
                   child: Text('Apertura tardes'),
-                   style: ElevatedButton.styleFrom(
-                    primary: AppTheme.primary,
-                  ),
                 ),
                 Text(
                   '${horaAperturaTarde?.format(context) ?? 'No seleccionada'}',
@@ -294,9 +284,6 @@ class _CalendarioYHorarioScreenState extends State<CalendarioYHorarioScreen> {
                   onPressed: () =>
                       callTimePicker((time) => horaCierreTarde = time),
                   child: Text('Cierre tardes'),
-                   style: ElevatedButton.styleFrom(
-                    primary: AppTheme.primary,
-                  ),
                 ),
                 Text(
                   '${horaCierreTarde?.format(context) ?? 'No seleccionada'}',
@@ -355,7 +342,7 @@ class _CalendarioYHorarioScreenState extends State<CalendarioYHorarioScreen> {
               },
             );
           },
-          backgroundColor: AppTheme.primary,
+          backgroundColor: Colors.transparent,
           elevation: 540,
           child: const Icon(Icons.add),
         ));

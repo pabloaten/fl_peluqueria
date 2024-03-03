@@ -27,12 +27,12 @@ class UsuariosServices extends ChangeNotifier {
     final url = Uri.https( _baseURL, 'usuarios.json' );
     final resp = await http.get( url );
 
-    final Map<String, dynamic> productosMap = json.decode(resp.body);
+    final Map<String, dynamic> usuariosMap = json.decode(resp.body);
 
-    productosMap.forEach((key, value) {
-      final tempProduct = Usuario.fromMap ( value );
-     
-      this.usuarios.add (tempProduct);
+    usuariosMap.forEach((key, value) {
+      final tempUsuario = Usuario.fromMap ( value );
+      //tempUsuario.email = key;
+      this.usuarios.add (tempUsuario);
 
     });
     
@@ -40,7 +40,7 @@ class UsuariosServices extends ChangeNotifier {
     notifyListeners();
 
     return usuarios;
-    //print(this.producto[1].nombre);
+    //print(this.usuario[1].nombreApellidos);
   }
 
  Future<Usuario?> buscarUsuarioPorEmail(String email) async {

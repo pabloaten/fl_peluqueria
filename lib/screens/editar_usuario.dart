@@ -37,7 +37,7 @@ class _EditarUsuarioScreenState extends State<EditarUsuarioScreen> {
         title: Text('Editar Usuario'),
       ),
       body: Padding(
-        padding: EdgeInsets.all(16.0),
+        padding: EdgeInsets.all(20.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
@@ -45,11 +45,12 @@ class _EditarUsuarioScreenState extends State<EditarUsuarioScreen> {
               controller: _nombreController,
               decoration: InputDecoration(labelText: 'Nombre y Apellidos'),
             ),
+            SizedBox(height: 20.0),
             TextField(
               controller: _rolController,
               decoration: InputDecoration(labelText: 'Rol'),
             ),
-            SizedBox(height: 16.0),
+            SizedBox(height: 20.0),
             ElevatedButton(
               onPressed: () async {
                 // Actualizar los datos del usuario con los valores de los campos de texto

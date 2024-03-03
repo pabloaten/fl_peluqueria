@@ -29,7 +29,7 @@ class _PeluquerosScreenState extends State<PeluquerosScreen> {
               child: CircularProgressIndicator(),
             );
           } else {
-            // Filtrar usuarios basados en el valor de búsqueda
+            // Filtrar usuarios basados en el valor de búsqueda, en este caso nombre y apellidos
             final List<Usuario> filteredUsers = usuariosServices.usuarios.where((usuario) {
               return usuario.nombreApellidos.toLowerCase().contains(searchValue.toLowerCase());
             }).toList();
@@ -41,7 +41,7 @@ class _PeluquerosScreenState extends State<PeluquerosScreen> {
                 return ListTile(
                   leading: Icon(Icons.person),
                   title: Text(usuario.nombreApellidos),
-                  subtitle: Text(usuario.email),
+                  subtitle: Text(usuario.email + "        " + usuario.telefono),
                   onTap: () {
                     Navigator.push(
                       context,

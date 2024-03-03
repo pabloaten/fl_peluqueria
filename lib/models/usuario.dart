@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 class Usuario {
+
     String email;
     String nombreApellidos;
     String rol;
@@ -8,6 +9,7 @@ class Usuario {
     String telefono;
 
     Usuario({
+     
         required this.email,
         required this.nombreApellidos,
         required this.rol,
@@ -20,6 +22,7 @@ class Usuario {
     String toRawJson() => json.encode(toMap());
 
     factory Usuario.fromMap(Map<String, dynamic> json) => Usuario(
+
         email: json["email"],
         nombreApellidos: json["nombreApellidos"],
         rol: json["rol"],
@@ -28,6 +31,7 @@ class Usuario {
     );
 
     Map<String, dynamic> toMap() => {
+    
         "email": email,
         "nombreApellidos": nombreApellidos,
         "rol": rol,
@@ -35,6 +39,7 @@ class Usuario {
         "telefono": telefono,
     };
      Usuario copy() => Usuario(
+     
         email: this.email,
         nombreApellidos: this.nombreApellidos,
         rol: this.rol,

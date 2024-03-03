@@ -1,7 +1,13 @@
+import 'dart:convert';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fl_peluqueria/models/usuario.dart';
+import 'package:fl_peluqueria/provider/user_role_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:http/http.dart' as http;
 //import 'package:cloud_firestore/cloud_firestore.dart';
 
 class CalendarioYHorarioScreen extends StatefulWidget {
@@ -14,38 +20,78 @@ class CalendarioYHorarioScreen extends StatefulWidget {
 
 class _CalendarioYHorarioScreenState extends State<CalendarioYHorarioScreen> {
   String? userRole;
+  late UsuarioRoleProvider userRoleProvider;
+  final String databaseURL =
+      'https://fl-productos2023-2024-default-rtdb.europe-west1.firebasedatabase.app/';
+  /*  
+
+   Future<void> insertData(Map<String, dynamic> data) async {
+    final Uri url = Uri.parse('$databaseURL/horarios.json');
+
+    try {
+      final response = await http.post(
+        url,
+        body: json.encode(data),
+      );
+
+      if (response.statusCode == 200) {
+        print('Datos insertados correctamente');
+      } else {
+        print('Error al insertar datos: ${response.statusCode}');
+      }
+    } catch (error) {
+      print('Error al insertar datos: $error');
+    }
+  }
+ */
+  Future<void> updateData(String horarioId, Map<String, dynamic> data) async {
+    final Uri url = Uri.parse('$databaseURL/horarios/$horarioId.json');
+
+    try {
+      final response = await http.patch(
+        url,
+        body: json.encode(data),
+      );
+
+      if (response.statusCode == 200) {
+        print('Datos actualizados correctamente');
+      } else {
+        print('Error al actualizar datos: ${response.statusCode}');
+      }
+    } catch (error) {
+      print('Error al actualizar datos: $error');
+    }
+  }
 
   @override
   void initState() {
     super.initState();
-    getUserRole().then((rol) {
-      setState(() {
-        userRole = rol;
-      });
-      if (rol != 'gerente') {
-        // Muestra un mensaje de error
-        ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Necesario rol "gerente".')));
-        // Redirige al usuario homeScreen
-        //activar cuando ya se quiera comprobar si funcion con el usuario segun roll!
-        //Navigator.pushNamed(context, '/');
-      }
-    });
+    userRoleProvider = Provider.of<UsuarioRoleProvider>(context, listen: false);
+
+    String? rol = userRoleProvider.user?.rol;
+    if (rol != 'gerente') {
+      // Muestra un mensaje de error
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Necesario rol "gerente".')));
+      // Redirige al usuario homeScreen
+      Navigator.pushNamed(context, '/');
+    }
   }
 
   // Recuperar el rol del usuario de Firestore
-  Future<String?> getUserRole() async {
+  /* Future<String?> getUserRole() async {
     User? user = FirebaseAuth.instance.currentUser;
+    print(user?.uid);
     if (user != null) {
-      /*  DocumentSnapshot doc = await FirebaseFirestore.instance
+       DocumentSnapshot doc = await FirebaseFirestore.instance
                     .collection('usuarios')
                     .doc(user.uid)
                     .get();
             Usuario usuario = Usuario.fromMap(doc.data() as Map<String, dynamic>);
-            return usuario.rol;*/
+            return usuario.rol;
     }
     return null;
-  }
+  } */
 
   //fechas seleccionadas en el calendario
   var _diaInicio;
@@ -127,10 +173,6 @@ class _CalendarioYHorarioScreenState extends State<CalendarioYHorarioScreen> {
 
     var _horaSeleccionada;
     return Scaffold(
-        appBar: AppBar(
-          title: const Text('Calendario y Horario'),
-          backgroundColor: Colors.grey.shade400,
-        ),
         body: Column(
           children: <Widget>[
             Container(
@@ -269,25 +311,29 @@ class _CalendarioYHorarioScreenState extends State<CalendarioYHorarioScreen> {
                       child: const Text('Aceptar'),
                       onPressed: () async {
                         Navigator.of(context).pop();
-                        User? user = FirebaseAuth.instance.currentUser;
-                        if (user != null) {
-                          /*await FirebaseFirestore.instance
-                                .collection('horarios')
-                                .doc(user.uid)
-                                .update({
-                                    'AperMan': horaAperturaManana,
-                                    'AperTar': horaCierreManana,
-                                   'CieMan': horaAperturaTarde,
-                                   'CieTar': horaCierreTarde,
-                                    'fechaFin': diaInicioFormat,
-                                  'fechaInicio': diaFinFormat,
-                          });*/
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                                content: Text(
-                                    'Los horarios han sido actualizados.')),
-                          );
-                        }
+
+                        // Obtener el rol del usuario del proveedor
+                        String? userRole = Provider.of<UsuarioRoleProvider>(
+                                context,
+                                listen: false)
+                            .user
+                            ?.rol;
+
+                        // Verificar si el rol del usuario es 'gerente'
+
+                        updateData('hor001', {
+                          'AperMan': horaAperturaManana.format(context),
+                          'AperTar': horaAperturaTarde.format(context),
+                          'CieMan': horaCierreManana.format(context),
+                          'CieTar': horaCierreTarde.format(context),
+                          'fechaFin': diaInicioFormat,
+                          'fechaInicio': diaFinFormat,
+                        });
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                              content:
+                                  Text('Los horarios han sido actualizados.')),
+                        );
                       },
                     ),
                   ],

@@ -41,7 +41,7 @@ class _PeluquerosScreenState extends State<PeluquerosScreen> {
                 return ListTile(
                   leading: Icon(Icons.person),
                   title: Text(usuario.nombreApellidos),
-                  subtitle: Text(usuario.email + "        " + usuario.telefono),
+                  subtitle: Text(usuario.email + "        " + usuario.telefono + "        " + usuario.sexo),
                   onTap: () {
                     Navigator.push(
                       context,

@@ -57,7 +57,7 @@ class _ReservasScreenState extends State<ReservasScreen> {
               selectedDecoration: BoxDecoration(
                 shape: BoxShape.circle,
                 color:
-                    AppTheme.primary, // Aquí puedes definir el color que desees
+                    AppTheme.primary, 
               ),
               todayDecoration: BoxDecoration(
                 shape: BoxShape.circle,

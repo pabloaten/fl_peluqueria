@@ -104,7 +104,7 @@ class _HomeScreenState extends State<HomeScreen> {
           _buildMenuItem(context, 'Contactar por WhatsApp', () {
             whatsapp();
           }),
-          // Otros elementos del menú...
+      
         ],
       ),
     );
